@@ -6,7 +6,9 @@ import RoleProtectedRoute from './RoleProtectedRoute';
 import AdminHome from '../pages/admin/AdminHome';
 import Notfound from '../pages/Notfound';
 import CourseCatalog from "../pages/student/CourseCatalog";
-
+import MyCourses from '../pages/student/MyCourses';
+import LessonPlayer from "../pages/student/LessonPlayer";
+import AdminCourses from "../pages/admin/AdminCourses";
 
 
 const router=createBrowserRouter(
@@ -34,10 +36,7 @@ const router=createBrowserRouter(
                     </RoleProtectedRoute>
                )
           },
-          {
-               path:"*",
-               element:<Notfound/>
-          },
+          
           {
                path: "/student/courses",
                element: (
@@ -45,7 +44,35 @@ const router=createBrowserRouter(
                     <CourseCatalog />
                </RoleProtectedRoute>
                )
-          }
+          },
+          {
+               path: "/student/my-courses",
+               element: (
+               <RoleProtectedRoute allowedRoles={["student"]}>
+                    <MyCourses />
+               </RoleProtectedRoute>
+               )
+          },
+          {
+               path: "/student/lesson/:id",
+               element: (
+               <RoleProtectedRoute allowedRoles={["student"]}>
+                    <LessonPlayer />
+               </RoleProtectedRoute>
+               )
+          },
+          {
+               path: "/admin/courses",
+               element: (
+               <RoleProtectedRoute allowedRoles={["admin"]}>
+                    <AdminCourses />
+               </RoleProtectedRoute>
+               )
+          },
+          {
+               path:"*",
+               element:<Notfound/>
+          },
      ]
 )
 

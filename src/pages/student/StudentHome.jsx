@@ -6,12 +6,12 @@ import AITutor from "../../components/ai/AITutor";
 
 function StudentHome() {
   let {auth,logout}=useContext(AuthContext)
-  let navigate = useNavigate();
+  // let navigate = useNavigate();
 
-  const handleLogout=()=>{
-    logout();
-    navigate("/login")
-  }
+  // const handleLogout=()=>{
+  //   logout();
+  //   navigate("/login")
+  // }
   return (
      <div className="min-h-screen  bg-gray-100">
       

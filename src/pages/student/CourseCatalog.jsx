@@ -1,48 +1,54 @@
 import Navbar from "../../components/common/Navbar";
 
 const CourseCatalog = () => {
-  // TEMP mock (will come from backend)
-  const course = {
-    title: "React for Beginners",
-    progress: 45,
-    lessons: [
-      { id: 1, title: "Introduction", completed: true },
-      { id: 2, title: "JSX Basics", completed: true },
-      { id: 3, title: "State & Props", completed: false }
-    ]
-  };
+  // TEMP mock (later from GET /courses)
+  const courses = [
+    {
+      id: "201",
+      title: "Node.js Backend Development",
+      description: "Learn backend APIs with Node.js and Express",
+      duration: "8 weeks"
+    },
+    {
+      id: "202",
+      title: "Database Design Basics",
+      description: "Understand relational & NoSQL databases",
+      duration: "4 weeks"
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-6 py-10">
-        <h1 className="text-2xl font-semibold mb-4">{course.title}</h1>
+        <h1 className="text-2xl font-semibold text-gray-800 mb-6">
+          Browse Courses
+        </h1>
 
-        {/* Progress */}
-        <div className="mb-6">
-          <div className="h-2 bg-gray-200 rounded">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {courses.map(course => (
             <div
-              className="h-2 bg-indigo-600 rounded"
-              style={{ width: `${course.progress}%` }}
-            />
-          </div>
-          <p className="text-sm text-gray-500 mt-1">
-            {course.progress}% complete
-          </p>
-        </div>
-
-        {/* Lessons */}
-        <div className="bg-white border rounded">
-          {course.lessons.map(lesson => (
-            <div
-              key={lesson.id}
-              className="p-4 border-b flex justify-between items-center"
+              key={course.id}
+              className="bg-white border rounded-lg p-5"
             >
-              <span>{lesson.title}</span>
-              <span className="text-sm text-gray-500">
-                {lesson.completed ? "Completed" : "Pending"}
-              </span>
+              <h2 className="text-lg font-semibold mb-2">
+                {course.title}
+              </h2>
+
+              <p className="text-sm text-gray-600 mb-3">
+                {course.description}
+              </p>
+
+              <p className="text-sm text-gray-500 mb-4">
+                Duration: {course.duration}
+              </p>
+
+              <button
+                className="bg-indigo-600 text-white px-4 py-2 rounded text-sm"
+              >
+                Enroll
+              </button>
             </div>
           ))}
         </div>
@@ -52,3 +58,4 @@ const CourseCatalog = () => {
 };
 
 export default CourseCatalog;
+
