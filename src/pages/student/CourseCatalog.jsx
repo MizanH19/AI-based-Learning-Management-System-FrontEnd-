@@ -18,6 +18,7 @@ const CourseCatalog = () => {
   ];
 
   return (
+    <section className="space-y-4">
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
@@ -26,11 +27,11 @@ const CourseCatalog = () => {
           Browse Courses
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className=" grid grid-cols-1 md:grid-cols-3 gap-6">
           {courses.map(course => (
             <div
               key={course.id}
-              className="bg-white border rounded-lg p-5"
+              className="bg-white h-60 border rounded-lg p-5 relative"
             >
               <h2 className="text-lg font-semibold mb-2">
                 {course.title}
@@ -45,7 +46,7 @@ const CourseCatalog = () => {
               </p>
 
               <button
-                className="bg-indigo-600 text-white px-4 py-2 rounded text-sm"
+                className="bg-indigo-600 text-white px-4 py-2 rounded text-sm absolute bottom-4 "
               >
                 Enroll
               </button>
@@ -54,6 +55,7 @@ const CourseCatalog = () => {
         </div>
       </div>
     </div>
+    </section>
   );
 };
 

@@ -16,6 +16,7 @@ const LessonPlayer = () => {
   const [showAI, setShowAI] = useState(false);
 
   return (
+    <section className="space-y-4">
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
@@ -75,6 +76,7 @@ const LessonPlayer = () => {
         )}
       </div>
     </div>
+    </section>
   );
 };
 

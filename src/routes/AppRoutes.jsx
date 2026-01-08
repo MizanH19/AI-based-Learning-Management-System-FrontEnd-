@@ -9,14 +9,21 @@ import CourseCatalog from "../pages/student/CourseCatalog";
 import MyCourses from '../pages/student/MyCourses';
 import LessonPlayer from "../pages/student/LessonPlayer";
 import AdminCourses from "../pages/admin/AdminCourses";
+import AdminUsers from '../pages/admin/AdminUsers';
+import Register from "../pages/auth/Register";
 
 
 const router=createBrowserRouter(
      [
           {
-               path:'/',
-               element:<Navigate to="Login"/>
+               path: "/register",
+               element: <Register />
           },
+          {
+               path: '/',
+               element: <Login />
+          },
+
           {
                path:'/login',
                element:<Login/>
@@ -67,6 +74,14 @@ const router=createBrowserRouter(
                <RoleProtectedRoute allowedRoles={["admin"]}>
                     <AdminCourses />
                </RoleProtectedRoute>
+               )
+          },
+          {
+               path:"/admin/users",
+               element:(
+                    <RoleProtectedRoute allowedRoles={['admin']}>
+                         <AdminUsers />
+                    </RoleProtectedRoute>
                )
           },
           {

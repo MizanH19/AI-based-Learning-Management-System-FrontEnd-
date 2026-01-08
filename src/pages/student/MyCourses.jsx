@@ -19,6 +19,7 @@ const MyCourses = () => {
   ];
 
   return (
+    <section className="space-y-4">
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
@@ -68,6 +69,7 @@ const MyCourses = () => {
         )}
       </div>
     </div>
+   </section>
   );
 };
 
