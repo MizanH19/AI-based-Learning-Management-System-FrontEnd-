@@ -1,3 +1,6 @@
+import AITutor from "../../components/ai/AITutor";
+import BackToHome from "../../components/common/BackToHome";
+import Footer from "../../components/common/Footer";
 import Navbar from "../../components/common/Navbar";
 
 const CourseCatalog = () => {
@@ -18,8 +21,16 @@ const CourseCatalog = () => {
   ];
 
   return (
-    <section className="space-y-4">
-    <div className="min-h-screen bg-gray-50">
+    <section className="space-y-4 pt-16">
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-10 px-6 rounded-xl mb-8">
+  <h1 className="text-3xl font-bold">
+    Continue your learning journey 
+  </h1>
+  <p className="opacity-90 mt-2">
+    Pick up where you left off or explore something new.
+  </p>
+</div>
+    <div className="min-h-screen bg-gray-50 ">
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-6 py-10">
@@ -55,6 +66,9 @@ const CourseCatalog = () => {
         </div>
       </div>
     </div>
+    <BackToHome/>
+    <AITutor/>
+    <Footer/>
     </section>
   );
 };

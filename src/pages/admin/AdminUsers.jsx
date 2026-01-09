@@ -27,7 +27,7 @@ const AdminUsers = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 pt-16">
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-8">

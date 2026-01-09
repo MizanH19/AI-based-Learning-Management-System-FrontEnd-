@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext,useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../../components/common/Navbar";
 import AITutor from "../../components/ai/AITutor";
 import { mockCourses } from "../../data/mockCourses";
@@ -12,6 +12,16 @@ function StudentHome() {
   const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = React.useState(0);
+  const location = useLocation();
+
+  useEffect(() => {
+  if (location.state?.scrollTo) {
+    const section = document.getElementById(location.state.scrollTo);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+}, [location]);
 
   const nextSlide = () => {
     setActiveSlide((prev) =>
@@ -25,15 +35,25 @@ function StudentHome() {
   );
 };
 
+
+
 const heroSlides = mockCourses.filter(course => course.isFeatured);
+useEffect(() => {
+  const interval = setInterval(() => {
+    setActiveSlide((prev) =>
+      prev === heroSlides.length - 1 ? 0 : prev + 1
+    );
+  }, 2800); // 4 seconds
+
+  return () => clearInterval(interval);
+}, [heroSlides.length]);
 
 
 
 
 
-  /* --------------------------------
-     CURRENTLY WATCHING (MOCK)
-  --------------------------------- */
+
+
   const currentlyWatching = [
     {
       id: "101",
@@ -57,12 +77,20 @@ const heroSlides = mockCourses.filter(course => course.isFeatured);
 
   return (
 
-    <div className="min-h-screen" style={{ background: "var(--bg)", color: "var(--text)" }}>
+    <div className="min-h-screen pt-16" style={{ background: "var(--bg)", color: "var(--text)" }}>
 
       <Navbar />
+    <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-10 px-6 rounded-xl mb-8">
+  <h1 className="text-3xl font-bold">
+    Continue your learning journey 
+  </h1>
+  <p className="opacity-90 mt-2">
+    Pick up where you left off or explore something new.
+  </p>
+</div>
 
-      {/* MAIN CONTENT */}
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-10 space-y-16">
+
+      < div className="max-w-7xl mx-auto px-4 md:px-6 py-10 space-y-16">
 
       <div className="relative overflow-hidden rounded-2xl 
                 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500
@@ -82,18 +110,19 @@ const heroSlides = mockCourses.filter(course => course.isFeatured);
             >
               <div className="flex flex-col md:flex-row items-center justify-between px-6 md:px-12 py-10 gap-6">
 
-                {/* LEFT TEXT */}
+   
                 <div className="max-w-xl">
-                  <p className="text-sm mb-2 opacity-90">
+                  <p className="text-lg font-semibold mb-2 opacity-90">
                     {getGreeting()}
-                    {auth?.name ? `, ${auth.name}` : "Student"} 👋
+                    {auth?.name ? `, ${auth.name}` : "Student"} 
                   </p>
 
                   <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight mb-4">
                     {course.title}
                   </h1>
 
-                  <p className="text-lg md:text-xl text-white/90 mb-8">
+                  <p className="text-lg md:text-xl text-white/90 mb-8 animate-pulse hover:animate-none">
+
                     {course.level} • {course.duration}
                   </p>
 
@@ -111,7 +140,6 @@ const heroSlides = mockCourses.filter(course => course.isFeatured);
                   </button>
                 </div>
 
-                {/* RIGHT IMAGE */}
                 <div className="w-full md:w-1/3">
                   <img
                     src={course.thumbnail}
@@ -124,7 +152,7 @@ const heroSlides = mockCourses.filter(course => course.isFeatured);
             </div>
           ))}
         </div>
-        {/* LEFT ARROW */}
+
         <button
           onClick={prevSlide}
           className="hidden md:flex items-center justify-center absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-10 h-10 shadow"
@@ -132,7 +160,6 @@ const heroSlides = mockCourses.filter(course => course.isFeatured);
           ‹
         </button>
 
-        {/* RIGHT ARROW */}
         <button
           onClick={nextSlide}
           className="hidden md:flex items-center justify-center absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-10 h-10 shadow"
@@ -141,7 +168,7 @@ const heroSlides = mockCourses.filter(course => course.isFeatured);
         </button>
 
 
-        {/* DOT INDICATORS */}
+
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
           {heroSlides.map((_, index) => (
             <button
@@ -156,9 +183,6 @@ const heroSlides = mockCourses.filter(course => course.isFeatured);
       </div>
 
 
-        {/* --------------------------------
-            CURRENTLY WATCHING
-        --------------------------------- */}
         <div>
           <h2 className="text-2xl font-semibold mb-3">
             Continue Learning
@@ -186,9 +210,8 @@ const heroSlides = mockCourses.filter(course => course.isFeatured);
                 </p>
 
                 <button
-                  onClick={() =>
-                    navigate(`/student/lesson/${course.id}`)
-                  }
+                    onClick={()=>{navigate(`/student/course/c1/lesson/l3`)}}
+                  
                   className="text-indigo-600 text-sm font-medium"
                 >
                   Resume →
@@ -200,15 +223,24 @@ const heroSlides = mockCourses.filter(course => course.isFeatured);
 
 
 {/* WHAT TO LEARN NEXT */}
-      <div className="space-y-20">
-        <section className="space-y-4">
+      
+       <div className="space-y-24">
+
+        {/* ===============================
+            WHAT TO LEARN NEXT
+        =============================== */}
+        <section
+          id="learn-next"
+          className="bg-indigo-50 rounded-2xl px-6 py-10 space-y-6"
+        >
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold">What to learn next</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              What to learn next
+            </h2>
             <span className="text-sm text-indigo-600 cursor-pointer hover:underline">
               View all
             </span>
           </div>
-
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {mockCourses.slice(0, 4).map((course) => (
@@ -216,17 +248,22 @@ const heroSlides = mockCourses.filter(course => course.isFeatured);
             ))}
           </div>
         </section>
-      </div>
-        {/* TRENDING COURSES */}
-        <div className="space-y-20">
-         <section className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-semibold">Trending Courses</h2>
-              <span className="text-sm text-indigo-600 cursor-pointer hover:underline">
-                View all
-              </span>
-            </div>
-          
+
+        {/* ===============================
+            TRENDING COURSES
+        =============================== */}
+        <section
+          id="trending"
+          className="bg-rose-50 rounded-2xl px-6 py-10 space-y-6"
+        >
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Trending Courses
+            </h2>
+            <span className="text-sm text-indigo-600 cursor-pointer hover:underline">
+              View all
+            </span>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {mockCourses
@@ -236,18 +273,22 @@ const heroSlides = mockCourses.filter(course => course.isFeatured);
               ))}
           </div>
         </section>
-      </div>
 
-        {/* NEW RELEASES */}
-        <div className="space-y-20">
-          <section className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-semibold">New Releases</h2>
-              <span className="text-sm text-indigo-600 cursor-pointer hover:underline">
-                View all
-              </span>
-            </div>
-
+        {/* ===============================
+            NEW RELEASES
+        =============================== */}
+        <section
+          id="new-releases"
+          className="bg-emerald-50 rounded-2xl px-6 py-10 space-y-6"
+        >
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              New Releases
+            </h2>
+            <span className="text-sm text-indigo-600 cursor-pointer hover:underline">
+              View all
+            </span>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {mockCourses
@@ -257,16 +298,22 @@ const heroSlides = mockCourses.filter(course => course.isFeatured);
               ))}
           </div>
         </section>
-        </div>
-        {/* TOP PICKS */}
-          <section className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-semibold">Our Top Picks</h2>
-              <span className="text-sm text-indigo-600 cursor-pointer hover:underline">
-                View all
-              </span>
-            </div>
 
+        {/* ===============================
+            TOP PICKS
+        =============================== */}
+        <section
+          id="top-picks"
+          className="bg-amber-50 rounded-2xl px-6 py-10 space-y-6"
+        >
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Our Top Picks
+            </h2>
+            <span className="text-sm text-indigo-600 cursor-pointer hover:underline">
+              View all
+            </span>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {mockCourses
@@ -276,6 +323,9 @@ const heroSlides = mockCourses.filter(course => course.isFeatured);
               ))}
           </div>
         </section>
+
+      </div>
+
 
 
       </div>

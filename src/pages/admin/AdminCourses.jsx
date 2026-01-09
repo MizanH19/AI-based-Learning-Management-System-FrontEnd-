@@ -47,7 +47,7 @@ const AdminCourses = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 pt-16">
       {/* Top Navbar (admin version auto-shown) */}
       <Navbar />
 

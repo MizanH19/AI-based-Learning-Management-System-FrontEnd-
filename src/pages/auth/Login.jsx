@@ -6,17 +6,11 @@ const Login = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // ----------------------------
-  // State
-  // ----------------------------
   const [role, setRole] = useState("student");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // ----------------------------
-  // Handle Login
-  // ----------------------------
   const handleLogin = (e) => {
     e.preventDefault();
 
@@ -25,73 +19,69 @@ const Login = () => {
       return;
     }
 
-    // Dummy auth (backend later)
     const userData = {
       name: role === "admin" ? "Admin" : "Student",
-      role: role,
-      email: email
+      role,
+      email,
     };
 
     login(userData);
-
-    // Redirect based on role
     navigate(role === "admin" ? "/admin" : "/student");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="bg-white w-full max-w-md p-8 rounded-lg shadow">
+    <div className="min-h-screen flex items-center justify-center 
+      bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 px-4">
+
+      <div className="w-full max-w-md backdrop-blur-xl bg-white/90 
+        p-8 rounded-2xl shadow-2xl">
 
         {/* TITLE */}
-        <h1 className="text-2xl font-semibold text-center mb-2">
-          Welcome back
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-1">
+          Welcome Back 👋
         </h1>
-        <p className={`${role==='admin'?"hidden":"text-sm text-gray-500 text-center mb-6"}`}>
-          Login to continue learning
-        </p>
+
+        {role !== "admin" && (
+          <p className="text-sm text-gray-500 text-center mb-6">
+            Login to continue your learning journey
+          </p>
+        )}
 
         {/* ROLE SELECTOR */}
-        <div className="flex mb-6 border rounded overflow-hidden">
-          <button
-            type="button"
-            onClick={() => setRole("student")}
-            className={`flex-1 py-2 text-sm ${
-              role === "student"
-                ? "bg-indigo-600 text-white"
-                : "bg-white text-gray-600"
-            }`}
-          >
-            Student
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setRole("admin")}
-            className={`flex-1 py-2 text-sm ${
-              role === "admin"
-                ? "bg-indigo-600 text-white"
-                : "bg-white text-gray-600"
-            }`}
-          >
-            Admin
-          </button>
+        <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
+          {["student", "admin"].map((r) => (
+            <button
+              key={r}
+              type="button"
+              onClick={() => setRole(r)}
+              className={`flex-1 py-2 rounded-md text-sm font-medium transition-all
+                ${
+                  role === r
+                    ? "bg-indigo-600 text-white shadow"
+                    : "text-gray-600 hover:bg-white"
+                }`}
+            >
+              {r === "student" ? "Student 🎓" : "Admin 🛠️"}
+            </button>
+          ))}
         </div>
 
-        {/* ERROR MESSAGE */}
+        {/* ERROR */}
         {error && (
-          <p className="text-red-500 text-sm mb-4">
+          <p className="text-red-500 text-sm text-center mb-4">
             {error}
           </p>
         )}
 
-        {/* LOGIN FORM */}
+        {/* FORM */}
         <form onSubmit={handleLogin} className="space-y-4">
           <input
             type="email"
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-300 p-3 rounded-lg 
+              focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           <input
@@ -99,24 +89,32 @@ const Login = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-300 p-3 rounded-lg 
+              focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-2 rounded mt-2"
+            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 
+              text-white py-3 rounded-lg font-semibold 
+              hover:opacity-90 transition-all shadow-lg"
           >
             Login as {role}
           </button>
         </form>
 
-        {/* REGISTER LINK */}
-        <p className={`${role==='admin'?"hidden":"text-sm text-center text-gray-500 mt-6"}`}>
-          New here?{" "}
-          <Link to="/register" className="text-indigo-600 hover:underline">
-            Create an account
-          </Link>
-        </p>
+        {/* REGISTER */}
+        {role !== "admin" && (
+          <p className="text-sm text-center text-gray-600 mt-6">
+            New here?{" "}
+            <Link
+              to="/register"
+              className="text-indigo-600 font-medium hover:underline"
+            >
+              Create an account
+            </Link>
+          </p>
+        )}
       </div>
     </div>
   );

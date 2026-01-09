@@ -26,14 +26,19 @@ const AITutor = () => {
       {/* Floating Button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 bg-indigo-600 text-white px-4 py-2 rounded-full shadow"
+        className="fixed bottom-6 right-6 z-52
+        bg-indigo-600 text-white
+        px-5 py-3 rounded-full
+        shadow-lg
+        hover:bg-indigo-700
+        transition-all"
       >
         AI Tutor
       </button>
 
       {/* Chat Panel */}
       {open && (
-        <div className="fixed bottom-20 right-6 w-80 bg-white border rounded-lg shadow-lg flex flex-col">
+        <div className="fixed bottom-25 right-6 w-80 bg-white border rounded-lg shadow-lg flex flex-col">
           
           {/* Header */}
           <div className="p-3 border-b font-semibold text-gray-800">
@@ -41,7 +46,7 @@ const AITutor = () => {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 p-3 space-y-2 overflow-y-auto text-sm">
+          <div className="flex-1 p-3 space-y-5  overflow-y-auto text-sm">
             {messages.map((msg, index) => (
               <div
                 key={index}

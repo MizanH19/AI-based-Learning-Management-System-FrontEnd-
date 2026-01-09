@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"; // 🔹 CHANGE (added useState)
+import { useContext, useState,useEffect } from "react"; // 🔹 CHANGE (added useState)
 import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -6,6 +6,7 @@ const Navbar = () => {
   const { auth, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [openProfile, setOpenProfile] = useState(false);
@@ -20,13 +21,59 @@ const Navbar = () => {
     // UI-only for now
     console.log("Search:", searchQuery);
   };
+  const scrollToSection = (id) => {
+  if (location.pathname === "/student") {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  } else {
+    navigate("/student", { replace: false, state: { scrollTo: id } });
+  }
+};
+useEffect(() => {
+  if (location.state && location.state.scrollTo) {
+    const el = document.getElementById(location.state.scrollTo);
+    if (el) {
+      requestAnimationFrame(() => {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.history.replaceState({}, document.title);
+      });
+    }
+  }
+}, [location.state]);
+
+
+const [showNavbar, setShowNavbar] = useState(true);
+const [lastScrollY, setLastScrollY] = useState(0);
+
+useEffect(() => {
+  const handleScroll = () => {
+    if (window.scrollY > lastScrollY) {
+      setShowNavbar(false); // scrolling down
+    } else {
+      setShowNavbar(true); // scrolling up
+    }
+    setLastScrollY(window.scrollY);
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [lastScrollY]);
+
+
+
 
   return (
-    <nav className="bg-white border-b px-6 py-3 flex items-center justify-between relative z-50">
+    <>
+    <nav className={`bg-white h- border-b px-10 py-6 flex items-center justify-between fixed top-0 left-0 w-full z-50
+    bg-white border-b
+    transition-transform duration-300
+    ${showNavbar ? "translate-y-0" : "-translate-y-full"}`}>
       
       {/* LOGO */}
       <div
-        className="text-xl font-semibold tracking-tight cursor-pointer"
+        className="text-3xl font-semibold tracking-tight cursor-pointer"
         onClick={() =>
           navigate(auth?.role === "admin" ? "/admin" : "/student")
         }
@@ -36,18 +83,87 @@ const Navbar = () => {
 
       {/* STUDENT NAVBAR */}
       {auth?.role === "student" && (
+        
         <div className="flex items-center gap-6 text-sm text-gray-700">
-
+          {/* HAMBURGER (MOBILE) */}
+<button
+  className="md:hidden text-2xl"
+  onClick={() => setMenuOpen(!menuOpen)}
+>
+  ☰
+</button>
           {/* SEARCH */}
-          <form onSubmit={handleSearch}>
-            <input
-              type="text"
-              placeholder="Search courses..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="px-3 py-1 border w-85 rounded text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            />
+          <form
+            onSubmit={handleSearch}
+            className="hidden md:flex items-center"
+          >
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search courses..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="
+                  pl-9 pr-3 py-2
+                  rounded-full
+                  border border-gray-300
+                  text-sm
+                  focus:outline-none focus:ring-2 focus:ring-indigo-500
+                  transition-all
+
+                  w-50        /* default */
+                  md:w-72     /* tablet */
+                  lg:w-120     /* desktop */
+                  mx-2
+                "
+              />
+
+              {/* SEARCH ICON */}
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
+                🔍
+              </span>
+            </div>
           </form>
+          {/* DESKTOP MENU */}
+        <div className="hidden md:flex items-center text-base font-semibold  text-gray-700 gap-5 lg:gap-7 xl:gap-10">
+  {/* your existing navbar items here */}
+
+
+          <span
+              className="cursor-pointer hover:text-indigo-600"
+              onClick={() =>
+                document.getElementById("learn-next")?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
+              What's next
+            </span>
+          <span
+              className="cursor-pointer hover:text-indigo-600"
+              onClick={() =>
+                document.getElementById("trending")?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
+              Trending
+            </span>
+
+            <span
+              className="cursor-pointer hover:text-indigo-600"
+              onClick={() =>
+                document.getElementById("new-releases")?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
+              New
+            </span>
+
+            <span
+              className="cursor-pointer hover:text-indigo-600"
+              onClick={() =>
+                document.getElementById("top-picks")?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
+              Top Picks
+            </span>
+
 
           {/* LINKS */}
           <span
@@ -64,20 +180,12 @@ const Navbar = () => {
             Browse
           </span>
 
-          {/* FAVORITES */}
-          <span
-            className="cursor-pointer hover:text-red-500"
-            title="Favourites"
-            onClick={() => navigate("/student/favourites")}
-          >
-            ❤️
-          </span>
 
           {/* PROFILE DROPDOWN */}
           <div className="relative">
             <div
               onClick={() => setOpenProfile(!openProfile)}
-              className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center cursor-pointer font-medium"
+              className="w-10 h-10 rounded-full bg-indigo-600 text-white flex text-xl items-center justify-center cursor-pointer font-medium"
             >
               {auth?.name?.charAt(0)?.toUpperCase() || "S"}
             </div>
@@ -106,6 +214,7 @@ const Navbar = () => {
               </div>
             )}
           </div>
+        </div>
         </div>
       )}
 
@@ -144,7 +253,75 @@ const Navbar = () => {
           </span>
         </div>
       )}
+      
     </nav>
+
+    {menuOpen && auth?.role === "student" && (
+  <div className="md:hidden bg-white border-b px-6 py-4 space-y-4 text-sm transition-all">
+
+    
+    <span
+      className="block cursor-pointer"
+      onClick={() => {
+        scrollToSection("learn-next");
+        setMenuOpen(false);
+      }}
+    >
+      Learn Next
+    </span>
+
+    <span
+      className="block cursor-pointer"
+      onClick={() => {
+        scrollToSection("trending");
+        setMenuOpen(false);
+      }}
+    >
+      Trending
+    </span>
+
+    <span
+      className="block cursor-pointer"
+      onClick={() => {
+        scrollToSection("new-releases");
+        setMenuOpen(false);
+      }}
+    >
+      New Releases
+    </span>
+
+    <span
+      className="block cursor-pointer"
+      onClick={() => {
+        scrollToSection("top-picks");
+        setMenuOpen(false);
+      }}
+    >
+      Top Picks
+    </span>
+
+    <span
+      className="block cursor-pointer"
+      onClick={() => {
+        navigate("/student/my-courses");
+        setMenuOpen(false);
+      }}
+    >
+      My Courses
+    </span>
+
+    <span
+      className="block text-red-500 cursor-pointer"
+      onClick={() => {
+        logout();
+        navigate("/login");
+      }}
+    >
+      Logout
+    </span>
+  </div>
+)}
+</>
   );
 };
 

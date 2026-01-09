@@ -4,8 +4,8 @@ import Footer from "../../components/common/Footer";
 
 function AdminHome() {
   return (
-     
-    <div className='min-h-screen bg-gray-50'>
+     <>
+    <div className='min-h-screen bg-gray-50 pt-16'>
      <Navbar/>
      <div className='max-w-6xl mx-auto px-6 py-10'>
           <h1 className='text-2xl font semibold text-gray-800 mb-2'>
@@ -31,8 +31,10 @@ function AdminHome() {
                </div>
           </div>
      </div>
-      <Footer/>
+      
     </div>
+    <Footer/>
+    </>
   )
 }
 

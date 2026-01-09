@@ -6,18 +6,12 @@ const Register = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // ----------------------------
-  // State
-  // ----------------------------
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  // ----------------------------
-  // Handle Register
-  // ----------------------------
   const handleRegister = (e) => {
     e.preventDefault();
 
@@ -31,46 +25,50 @@ const Register = () => {
       return;
     }
 
-    // Dummy backend response
     const userData = {
-      name: name,
-      email: email,
-      role: "student"
+      name,
+      email,
+      role: "student",
     };
 
-    // Auto login after register
     login(userData);
     navigate("/student");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="bg-white w-full max-w-md p-8 rounded-lg shadow">
-
+    <div
+      className="min-h-screen flex items-center justify-center 
+      bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 px-4"
+    >
+      <div
+        className="w-full max-w-md backdrop-blur-xl bg-white/90 
+        p-8 rounded-2xl shadow-2xl"
+      >
         {/* TITLE */}
-        <h1 className="text-2xl font-semibold text-center mb-2">
-          Create your account
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-1">
+          Create your account ✨
         </h1>
+
         <p className="text-sm text-gray-500 text-center mb-6">
           Start learning with CoreLearn
         </p>
 
         {/* ERROR */}
         {error && (
-          <p className="text-red-500 text-sm mb-4">
+          <p className="text-red-500 text-sm text-center mb-4">
             {error}
           </p>
         )}
 
         {/* REGISTER FORM */}
         <form onSubmit={handleRegister} className="space-y-4">
-
           <input
             type="text"
             placeholder="Full name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-300 p-3 rounded-lg
+              focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           <input
@@ -78,7 +76,8 @@ const Register = () => {
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-300 p-3 rounded-lg
+              focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           <input
@@ -86,7 +85,8 @@ const Register = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-300 p-3 rounded-lg
+              focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           <input
@@ -94,21 +94,27 @@ const Register = () => {
             placeholder="Confirm password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-300 p-3 rounded-lg
+              focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-2 rounded mt-2"
+            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600
+              text-white py-3 rounded-lg font-semibold
+              hover:opacity-90 transition-all shadow-lg"
           >
             Create account
           </button>
         </form>
 
         {/* LOGIN LINK */}
-        <p className="text-sm text-center text-gray-500 mt-6">
+        <p className="text-sm text-center text-gray-600 mt-6">
           Already have an account?{" "}
-          <Link to="/login" className="text-indigo-600 hover:underline">
+          <Link
+            to="/login"
+            className="text-indigo-600 font-medium hover:underline"
+          >
             Login
           </Link>
         </p>

@@ -5,12 +5,23 @@ const CourseCard = ({ course }) => {
 
   return (
    
+    <div
+  className="
+    bg-white rounded-xl
+    shadow-sm
+    hover:shadow-2xl
+    hover:-translate-y-1
+    transition-all duration-300
+  "
+>
+
     <div className="bg-white rounded-2xl 
                 border border-gray-100
                 shadow-sm hover:shadow-xl
                 transition-all duration-300
                 hover:-translate-y-1
-                flex flex-col overflow-hidden">
+                flex flex-col overflow-hidden"
+                onClick={() => navigate(`/student/course/${course.id}`)}>
       
       {/* COURSE IMAGE */}
       <div className="relative">
@@ -43,6 +54,7 @@ const CourseCard = ({ course }) => {
           View Course
         </button>
       </div>
+    </div>
     </div>
     
   );
