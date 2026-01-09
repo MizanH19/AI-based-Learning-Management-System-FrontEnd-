@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const CourseCard = ({ course }) => {
+const CourseCard = ({ course, actionLabel, onAction, disabled }) => {
   const navigate = useNavigate();
 
   return (
@@ -47,12 +47,21 @@ const CourseCard = ({ course }) => {
         </div>
 
         <button
-          onClick={() => navigate(`/student/course/${course.id}`)}
-          className="w-full mt-auto bg-indigo-600 text-white text-sm py-2 rounded-lg
-                   hover:bg-indigo-700 transition"
-        >
-          View Course
+            onClick={(e) => {
+              e.stopPropagation();
+              onAction?.();
+            }}
+            disabled={disabled}
+            className={`w-full mt-auto text-sm py-2 rounded-lg transition
+              ${
+                disabled
+                  ? "bg-green-500 text-white cursor-not-allowed"
+                  : "bg-indigo-600 text-white hover:bg-indigo-700"
+              }`}
+          >
+            {actionLabel}
         </button>
+
       </div>
     </div>
     </div>

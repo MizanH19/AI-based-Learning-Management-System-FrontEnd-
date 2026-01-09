@@ -1,32 +1,32 @@
 import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import { login as loginApi } from "../../api/auth.api";
 
 const Login = () => {
-  const { login } = useContext(AuthContext);
+  const { login: authLogin } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const [role, setRole] = useState("student");
+  // const [role, setRole] = useState("student");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
       setError("Please fill all fields");
       return;
     }
-
-    const userData = {
-      name: role === "admin" ? "Admin" : "Student",
-      role,
-      email,
-    };
-
-    login(userData);
-    navigate(role === "admin" ? "/admin" : "/student");
+    try {
+      const res = await loginApi({email, password})
+      authLogin(res)
+      navigate(res.role === "admin" ? "/admin" : "/student");
+    } catch (error) {
+      setError("Invalid credentials")
+    }
   };
 
   return (
@@ -41,14 +41,13 @@ const Login = () => {
           Welcome Back 👋
         </h1>
 
-        {role !== "admin" && (
-          <p className="text-sm text-gray-500 text-center mb-6">
-            Login to continue your learning journey
-          </p>
-        )}
+        <p className="text-sm text-gray-500 text-center mb-6">
+          Login to continue your learning journey
+        </p>
+
 
         {/* ROLE SELECTOR */}
-        <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
+        {/* <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
           {["student", "admin"].map((r) => (
             <button
               key={r}
@@ -56,7 +55,7 @@ const Login = () => {
               onClick={() => setRole(r)}
               className={`flex-1 py-2 rounded-md text-sm font-medium transition-all
                 ${
-                  role === r
+                  res.role === r
                     ? "bg-indigo-600 text-white shadow"
                     : "text-gray-600 hover:bg-white"
                 }`}
@@ -64,7 +63,7 @@ const Login = () => {
               {r === "student" ? "Student 🎓" : "Admin 🛠️"}
             </button>
           ))}
-        </div>
+        </div> */}
 
         {/* ERROR */}
         {error && (
@@ -99,22 +98,21 @@ const Login = () => {
               text-white py-3 rounded-lg font-semibold 
               hover:opacity-90 transition-all shadow-lg"
           >
-            Login as {role}
+            Login 
           </button>
         </form>
 
         {/* REGISTER */}
-        {role !== "admin" && (
-          <p className="text-sm text-center text-gray-600 mt-6">
-            New here?{" "}
-            <Link
-              to="/register"
-              className="text-indigo-600 font-medium hover:underline"
-            >
-              Create an account
-            </Link>
-          </p>
-        )}
+        <p className="text-sm text-center text-gray-600 mt-6">
+          New here?{" "}
+          <Link
+            to="/register"
+            className="text-indigo-600 font-medium hover:underline"
+          >
+            Create an account
+          </Link>
+        </p>
+
       </div>
     </div>
   );

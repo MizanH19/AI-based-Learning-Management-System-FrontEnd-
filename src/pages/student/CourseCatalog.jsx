@@ -2,23 +2,30 @@ import AITutor from "../../components/ai/AITutor";
 import BackToHome from "../../components/common/BackToHome";
 import Footer from "../../components/common/Footer";
 import Navbar from "../../components/common/Navbar";
-
+import { useEffect,useState } from "react";
+import { useEnrollment } from "../../context/EnrollmentContext";
+import {getAllCourses} from "../../api/student.api";
+import CourseCard from "./CourseCard";
 const CourseCatalog = () => {
-  // TEMP mock (later from GET /courses)
-  const courses = [
-    {
-      id: "201",
-      title: "Node.js Backend Development",
-      description: "Learn backend APIs with Node.js and Express",
-      duration: "8 weeks"
-    },
-    {
-      id: "202",
-      title: "Database Design Basics",
-      description: "Understand relational & NoSQL databases",
-      duration: "4 weeks"
-    }
-  ];
+  const [courses,setCourses]=useState([]);
+  const [loading,setLoading]=useState(true);
+  
+  useEffect(()=>{
+    const fetchCourses = async()=>{
+      try {
+        const data=await getAllCourses();
+        setCourses(data)
+      } catch (error) {
+        console.error("Failed to fetch courses",error);
+      }
+      finally{
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  },[])
+
+  const {enrollCourse,isEnrolled}=useEnrollment();
 
   return (
     <section className="space-y-4 pt-16">
@@ -38,32 +45,24 @@ const CourseCatalog = () => {
           Browse Courses
         </h1>
 
-        <div className=" grid grid-cols-1 md:grid-cols-3 gap-6">
+        {loading && (
+            <p className="text-gray-500">Loading courses...</p>
+          )}
+
+      {!loading &&(
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {courses.map(course => (
-            <div
-              key={course.id}
-              className="bg-white h-60 border rounded-lg p-5 relative"
-            >
-              <h2 className="text-lg font-semibold mb-2">
-                {course.title}
-              </h2>
+            <CourseCard
+              course={course}
+              actionLabel={isEnrolled(course.id) ? "Enrolled" : "Enroll"}
+              disabled={isEnrolled(course.id)}
+              onAction={() => enrollCourse(course.id)}
+            />
 
-              <p className="text-sm text-gray-600 mb-3">
-                {course.description}
-              </p>
-
-              <p className="text-sm text-gray-500 mb-4">
-                Duration: {course.duration}
-              </p>
-
-              <button
-                className="bg-indigo-600 text-white px-4 py-2 rounded text-sm absolute bottom-4 "
-              >
-                Enroll
-              </button>
-            </div>
           ))}
         </div>
+
+                )}
       </div>
     </div>
     <BackToHome/>
