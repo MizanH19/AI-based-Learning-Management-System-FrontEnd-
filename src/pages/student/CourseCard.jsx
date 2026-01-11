@@ -5,15 +5,7 @@ const CourseCard = ({ course, actionLabel, onAction, disabled }) => {
 
   return (
    
-    <div
-  className="
-    bg-white rounded-xl
-    shadow-sm
-    hover:shadow-2xl
-    hover:-translate-y-1
-    transition-all duration-300
-  "
->
+    
 
     <div className="bg-white rounded-2xl 
                 border border-gray-100
@@ -21,7 +13,7 @@ const CourseCard = ({ course, actionLabel, onAction, disabled }) => {
                 transition-all duration-300
                 hover:-translate-y-1
                 flex flex-col overflow-hidden"
-                onClick={() => navigate(`/student/course/${course.id}`)}>
+                onClick={() => navigate(`/student/course/${course._id}`)}>
       
       {/* COURSE IMAGE */}
       <div className="relative">
@@ -64,7 +56,7 @@ const CourseCard = ({ course, actionLabel, onAction, disabled }) => {
 
       </div>
     </div>
-    </div>
+    
     
   );
 };

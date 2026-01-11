@@ -10,7 +10,8 @@ const RoleProtectedRoute=({children, allowedRoles})=>{
      }
 
      if(!allowedRoles.includes(auth.role)){
-          return <Navigate to="/login" replace />
+          return <Navigate to="/login" replace state={{ reason: "unauthorized" }} />;
+
      }
 
      return children;

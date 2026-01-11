@@ -6,10 +6,21 @@ import { useEffect,useState } from "react";
 import { useEnrollment } from "../../context/EnrollmentContext";
 import {getAllCourses} from "../../api/student.api";
 import CourseCard from "./CourseCard";
+import { enrollInCourse } from "../../api/student.api";
+
 const CourseCatalog = () => {
   const [courses,setCourses]=useState([]);
   const [loading,setLoading]=useState(true);
   
+  const handleEnroll = async (courseId) => {
+    try {
+      await enrollInCourse(courseId);
+      alert("Enrolled successfully");
+    } catch (err) {
+      alert("Already enrolled or error");
+    }
+  };
+
   useEffect(()=>{
     const fetchCourses = async()=>{
       try {
@@ -53,11 +64,22 @@ const CourseCatalog = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {courses.map(course => (
             <CourseCard
-              course={course}
-              actionLabel={isEnrolled(course.id) ? "Enrolled" : "Enroll"}
-              disabled={isEnrolled(course.id)}
-              onAction={() => enrollCourse(course.id)}
+            key={course._id}
+              course={{
+                id: course._id,            // 🔑 normalize here
+                title: course.title,
+                description: course.description,
+                thumbnail: course.thumbnail,
+                duration: course.duration,
+                rating: course.rating,
+                learners: course.learners,
+                lessons: course.lessons
+              }}
+              actionLabel={isEnrolled(course._id) ? "Enrolled" : "Enroll"}
+              disabled={isEnrolled(course._id)}
+              onAction={() => handleEnroll(course._id)}
             />
+
 
           ))}
         </div>

@@ -1,9 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { mockCourses } from "../../data/mockCourses";
+// import { mockCourses } from "../../data/mockCourses";
 import Navbar from "../../components/common/Navbar";
 import BackToHome from "../../components/common/BackToHome";
 import {getCourseDetails} from '../../api/student.api'
 import { useEffect,useState } from "react";
+import {useEnrollment} from '../../context/EnrollmentContext';
 
 function CourseDetails() {
   const { id } = useParams();
@@ -11,7 +12,7 @@ function CourseDetails() {
      const [course, setCourse]=useState(null);
      const [loading,setLoading]=useState(true);
      const [error,setError] = useState("")
-
+     const {enrollCourse , isEnrolled} = useEnrollment()
 
 
   const navigate = useNavigate();
@@ -54,9 +55,29 @@ function CourseDetails() {
           <p className="text-gray-600 mb-4">
             {course.description}
           </p>
-          <button className="bg-indigo-600 text-white px-6 py-2 rounded">
+          {!isEnrolled(course._id) ? (
+          <button
+            onClick={() => {enrollCourse(course._id)
+              console.log("Enrolling course with id:", course._id);
+            }
+            }
+            className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition"
+          >
+            Enroll
+          </button>
+        ) : (
+          <button
+            onClick={() =>
+              navigate(
+                `/student/course/${course._id}/lesson/${course.lessons[0]._id}`
+              )
+            }
+            className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"
+          >
             Start Learning
           </button>
+        )}
+
         </div>
 
         {/* LESSON LIST */}
@@ -68,9 +89,9 @@ function CourseDetails() {
           <div className="space-y-3">
             {course.lessons.map((lesson, index) => (
               <div
-                key={lesson.id}
+                key={lesson._id}
                 className="flex items-center justify-between border p-4 rounded hover:bg-gray-100"
-                onClick={()=>{navigate(`/student/course/${course.id}/lesson/${lesson.id}`)}}
+                onClick={()=>{navigate(`/student/course/${course._id}/lesson/${lesson._id}`)}}
               >
                 <div>
                   <p className="font-medium">
@@ -82,7 +103,10 @@ function CourseDetails() {
                 </div>
 
                 <span className="text-sm text-indigo-600">
-                  {lesson.type}
+                  {lesson.type.toUpperCase()}
+                </span>
+                <span className="text-sm text-indigo-600">
+                  ▶
                 </span>
               </div>
             ))}

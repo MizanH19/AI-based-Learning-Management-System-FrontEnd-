@@ -11,10 +11,12 @@ export const AuthProvider = ({ children }) => {
   });
 
   // 2️⃣ Login → save to state + localStorage
-  const login = (data) => {
-    setAuth(data);
-    localStorage.setItem("auth", JSON.stringify(data));
-  };
+  const login = ({ token, role }) => {
+  const authData = { token, role };
+  setAuth(authData);
+  localStorage.setItem("auth", JSON.stringify(authData));
+};
+
 
   // 3️⃣ Logout → clear everything
   const logout = () => {

@@ -1,6 +1,6 @@
 export const mockCourses = [
   {
-    id: "c1",
+    _id: 201,
     title: "Complete Web Development Bootcamp",
     instructor: "CoreLearn",
     thumbnail:

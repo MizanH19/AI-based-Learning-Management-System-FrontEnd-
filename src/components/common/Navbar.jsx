@@ -257,11 +257,11 @@ useEffect(() => {
     </nav>
 
     {menuOpen && auth?.role === "student" && (
-  <div className="md:hidden bg-white border-b px-6 py-4 space-y-4 text-sm transition-all">
+  <div className="md:hidden bg-white border-b px-6 py-4 space-y-4 text-sm transition-all my-3">
 
     
     <span
-      className="block cursor-pointer"
+      className="block cursor-pointer mt-2"
       onClick={() => {
         scrollToSection("learn-next");
         setMenuOpen(false);

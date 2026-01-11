@@ -12,6 +12,7 @@ import AdminCourses from "../pages/admin/AdminCourses";
 import AdminUsers from '../pages/admin/AdminUsers';
 import Register from "../pages/auth/Register";
 import CourseDetails from '../pages/student/CourseDetails';
+import LessonQuiz from '../pages/student/LessonQuiz'
 
 const router=createBrowserRouter(
      [
@@ -85,14 +86,14 @@ const router=createBrowserRouter(
                )
           },
           {
-               path:"/student/course/:id",
-               element:(
-                    <RoleProtectedRoute allowedRoles={["student"]}>
-                         <CourseDetails/>
-                    </RoleProtectedRoute>
+               path: "/student/course/:courseId",
+               element: (
+               <RoleProtectedRoute allowedRoles={["student"]}>
+                    <CourseDetails />
+               </RoleProtectedRoute>
                )
-          },
-          {
+               },
+               {
                path: "/student/course/:courseId/lesson/:lessonId",
                element: (
                <RoleProtectedRoute allowedRoles={["student"]}>
@@ -100,6 +101,23 @@ const router=createBrowserRouter(
                </RoleProtectedRoute>
                )
                },
+               {
+               path: "/student/course/:courseId/lesson/:lessonId",
+               element: (
+               <RoleProtectedRoute allowedRoles={["student"]}>
+                    <LessonPlayer />
+               </RoleProtectedRoute>
+               )
+               },
+               {
+                    path:"/student/course/:courseId/lesson/:lessonId/quiz",
+                    element:(
+                         <RoleProtectedRoute allowedRoles={['student']}>
+                              <LessonQuiz/>
+                         </RoleProtectedRoute>
+                    )
+               },
+               
           {
                path:"*",
                element:<Notfound/>

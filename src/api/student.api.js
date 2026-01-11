@@ -7,12 +7,18 @@ export const getCourseDetails = async (courseId) => {
 
 
 export const getAllCourses = async () => {
-  return [
-    {
-      _id: "201",
-      title: "Node.js Backend Development",
-      description: "Learn backend APIs with Node.js and Express",
-      duration: "8 weeks"
-    }
-  ];
+  const res = await axios.get("/student/courses");
+  return res.data;
+};
+
+export const getMyCourses = async () => {
+  const res = await axios.get("/student/my-courses");
+  return res.data;
+};
+
+export const enrollInCourse = async (courseId) => {
+  const res = await axios.post("/student/enroll", {
+    courseId
+  });
+  return res.data;
 };
