@@ -1,16 +1,21 @@
 import Navbar from "../../components/common/Navbar";
 import BackToHome from "../../components/common/BackToHome";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getCourseDetails } from "../../api/student.api";
 import { completeLesson } from "../../api/progress.api";
+import {askAI} from '../../api/ai.api'
 
 const LessonPlayer = () => {
   const { courseId, lessonId } = useParams();
-
+  const navigate = useNavigate();
   const [lesson, setLesson] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+
 
   useEffect(() => {
     const fetchLesson = async () => {
@@ -36,11 +41,30 @@ const LessonPlayer = () => {
     fetchLesson();
   }, [courseId, lessonId]);
 
+  const handleAskAI = async () => {
+    if (!question.trim()) return;
+
+    try {
+      setAiLoading(true);
+      const res = await askAI({
+        courseId,
+        lessonId,
+        question
+      });
+      setAnswer(res.answer);
+    } catch {
+      alert("AI failed to respond");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+
   if (loading) return <div className="p-10">Loading lesson...</div>;
   if (error) return <div className="p-10">{error}</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 mt-20">
       <Navbar />
 
       <div className="max-w-5xl mx-auto px-6 py-8 space-y-6">
@@ -63,22 +87,51 @@ const LessonPlayer = () => {
             </video>
           </div>
         )}
+        <div className="bg-white border rounded p-4 space-y-3">
+          <textarea
+            placeholder="Ask AI about this lesson..."
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            className="border p-2 rounded w-full"
+          />
+
+          <button
+            onClick={handleAskAI}
+            disabled={aiLoading}
+            className="bg-indigo-600 text-white px-4 py-2 rounded"
+          >
+            {aiLoading ? "Thinking..." : "Ask AI"}
+          </button>
+
+          {answer && (
+            <div className="bg-gray-50 p-3 rounded text-sm">
+              {answer}
+            </div>
+          )}
+        </div>
+
 
         {/* ACTIONS (HOOK READY) */}
         <div className="flex gap-4">
           <button
-            onClick={() =>
-              completeLesson(courseId, lessonId)
-            }
+            onClick={() => completeLesson(courseId, lessonId)}
             className="bg-green-600 text-white px-4 py-2 rounded"
           >
             Mark as Complete
           </button>
 
-          <button className="border px-4 py-2 rounded">
-            Ask AI
+          <button
+            onClick={() =>
+              navigate(
+                `/student/course/${courseId}/lesson/${lessonId}/quiz`
+              )
+            }
+            className="bg-indigo-600 text-white px-4 py-2 rounded"
+          >
+            Take Quiz
           </button>
         </div>
+
 
       </div>
 

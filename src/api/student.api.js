@@ -2,23 +2,22 @@ import axios from "./axios";
 
 export const getCourseDetails = async (courseId) => {
   const res = await axios.get(`/student/courses/${courseId}`);
-  return res.data;
+  return res.data.data;
 };
-
 
 export const getAllCourses = async () => {
   const res = await axios.get("/student/courses");
-  return res.data;
+  return res.data.data;
 };
 
 export const getMyCourses = async () => {
   const res = await axios.get("/student/my-courses");
-  return res.data;
+  return res.data.data;
 };
 
 export const enrollInCourse = async (courseId) => {
   const res = await axios.post("/student/enroll", {
-    courseId
+    courseId,
   });
-  return res.data;
+  return res.data.data;
 };

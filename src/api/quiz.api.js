@@ -5,23 +5,19 @@ import axios from "./axios";
  */
 export const generateQuiz = async (lessonId) => {
   const res = await axios.post("/ai/generate-quiz", {
-    lessonId
+    lessonId,
   });
-  return res.data;
+  return res.data.data;
 };
 
 /**
  * Submit quiz answers
  */
-export const submitQuiz = async ({
-  courseId,
-  lessonId,
-  answers
-}) => {
+export const submitQuiz = async ({ courseId, lessonId, answers }) => {
   const res = await axios.post("/quiz/submit", {
     courseId,
     lessonId,
-    answers
+    answers,
   });
-  return res.data;
+  return res.data.data;
 };

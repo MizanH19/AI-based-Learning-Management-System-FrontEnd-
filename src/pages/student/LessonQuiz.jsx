@@ -2,7 +2,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "../../components/common/Navbar";
 import BackToHome from "../../components/common/BackToHome";
-import { submitQuiz } from "../../api/quiz.api";
+import { generateQuiz,submitQuiz } from "../../api/quiz.api";
+import { completeLesson } from "../../api/progress.api";
 
 const LessonQuiz = () => {
   const { courseId, lessonId } = useParams();
@@ -15,30 +16,36 @@ const LessonQuiz = () => {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
 
-  // MOCK quiz for now (until AI generate is wired)
   useEffect(() => {
-    const mockQuiz = {
-      questions: [
-        {
-          question: "What is React?",
-          options: [
-            "A backend framework",
-            "A JavaScript library for UI",
-            "A database",
-            "A CSS framework"
-          ]
-        },
-        {
-          question: "What hook is used for state?",
-          options: ["useFetch", "useState", "useData", "useRef"]
-        }
-      ]
+    if (result?.passed) {
+      const timer = setTimeout(() => {
+        navigate(`/student/course/${courseId}`);
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [result, courseId, navigate]);
+
+
+  useEffect(() => {
+    const loadQuiz = async () => {
+      try {
+        const data = await generateQuiz(lessonId);
+
+        setQuestions(data.quiz.questions);
+        setAnswers(
+          new Array(data.quiz.questions.length).fill(null)
+        );
+      } catch (err) {
+        setError("Failed to generate quiz");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    setQuestions(mockQuiz.questions);
-    setAnswers(new Array(mockQuiz.questions.length).fill(null));
-    setLoading(false);
-  }, []);
+    loadQuiz();
+  }, [lessonId]);
+
 
   const handleSelect = (qIndex, optionIndex) => {
     const updated = [...answers];
@@ -59,7 +66,12 @@ const LessonQuiz = () => {
         answers
       });
 
+
       setResult(res);
+
+      if (res.passed) {
+        await completeLesson(courseId, lessonId);
+      }
     } catch {
       setError("Failed to submit quiz");
     }

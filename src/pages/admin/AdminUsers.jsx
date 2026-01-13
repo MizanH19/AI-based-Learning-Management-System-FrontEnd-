@@ -1,30 +1,27 @@
 import Navbar from "../../components/common/Navbar";
+import { getAllUsers } from "../../api/admin.api";
+import { useEffect,useState } from "react";
 
 const AdminUsers = () => {
-  // Mock users (later from backend)
-  const users = [
-    {
-      id: 1,
-      name: "Rahul Sharma",
-      email: "rahul@gmail.com",
-      role: "student",
-      status: "active"
-    },
-    {
-      id: 2,
-      name: "Anjali Verma",
-      email: "anjali@gmail.com",
-      role: "student",
-      status: "blocked"
-    },
-    {
-      id: 3,
-      name: "Admin User",
-      email: "admin@corelearn.com",
-      role: "admin",
-      status: "active"
-    }
-  ];
+  const [users, setUser] = useState([]);
+    const [loading, setLoading] = useState(true);
+  
+    useEffect(() => {
+      const loadUsersData = async () => {
+        try {
+          const users = await getAllUsers()
+          setUser(users)
+
+  
+        } catch (err) {
+          console.error("Failed to load admin dashboard data", err);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      loadUsersData();
+    }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 pt-16">
@@ -61,7 +58,7 @@ const AdminUsers = () => {
                           : "bg-red-100 text-red-700"
                       }`}
                     >
-                      {user.status}
+                      {/* {user.status} */}
                     </span>
                   </td>
                 </tr>
@@ -85,7 +82,7 @@ const AdminUsers = () => {
                   Role: {user.role}
                 </span>
 
-                <span
+                {/* <span
                   className={`px-2 py-1 rounded text-xs ${
                     user.status === "active"
                       ? "bg-green-100 text-green-700"
@@ -93,7 +90,7 @@ const AdminUsers = () => {
                   }`}
                 >
                   {user.status}
-                </span>
+                </span> */}
               </div>
             </div>
           ))}

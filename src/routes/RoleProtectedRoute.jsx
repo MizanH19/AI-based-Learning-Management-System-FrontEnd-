@@ -1,20 +1,44 @@
-import React, { Children, useContext } from 'react'
-import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext'
+// src/routes/RoleProtectedRoute.jsx
 
-const RoleProtectedRoute=({children, allowedRoles})=>{
-     const {auth} =useContext(AuthContext);
+import { useContext } from "react";
+import { Navigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
-     if(!auth){
-          return <Navigate to='/login' replace />
-     }
+const RoleProtectedRoute = ({ children, allowedRoles }) => {
+  const { auth } = useContext(AuthContext);
 
-     if(!allowedRoles.includes(auth.role)){
-          return <Navigate to="/login" replace state={{ reason: "unauthorized" }} />;
+  /**
+   * auth shape:
+   * null
+   * OR
+   * {
+   *   token: string,
+   *   role: "admin" | "student"
+   * }
+   */
 
-     }
+  // 1️⃣ Not logged in or token missing
+  if (!auth || !auth.token) {
+    return <Navigate to="/login" replace />;
+  }
 
-     return children;
-}
+  // 2️⃣ Logged in but role not allowed
+  if (!allowedRoles.includes(auth.role)) {
+    // Redirect to correct dashboard instead of login
+    if (auth.role === "admin") {
+      return <Navigate to="/admin" replace />;
+    }
 
-export default RoleProtectedRoute
+    if (auth.role === "student") {
+      return <Navigate to="/student" replace />;
+    }
+
+    // Fallback safety
+    return <Navigate to="/login" replace />;
+  }
+
+  // 3️⃣ Authorized
+  return children;
+};
+
+export default RoleProtectedRoute;

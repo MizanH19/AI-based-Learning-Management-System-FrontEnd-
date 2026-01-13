@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-
+import { register } from "../../api/auth.api";
 const Register = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -12,28 +12,40 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleRegister = (e) => {
+  // const handleRegister = (e) => {
+  //   e.preventDefault();
+
+  //   if (!name || !email || !password || !confirmPassword) {
+  //     setError("All fields are required");
+  //     return;
+  //   }
+
+  //   if (password !== confirmPassword) {
+  //     setError("Passwords do not match");
+  //     return;
+  //   }
+
+  //   const userData = {
+  //     name,
+  //     email,
+  //     role: "student",
+  //   };
+
+  //   login(userData);
+  //   navigate("/student");
+  // };
+  const handleRegister = async (e) => {
     e.preventDefault();
+    setError("");
 
-    if (!name || !email || !password || !confirmPassword) {
-      setError("All fields are required");
-      return;
+    try {
+      await register({ name, email, password });
+      navigate("/login");
+    } catch {
+      setError("Registration failed");
     }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    const userData = {
-      name,
-      email,
-      role: "student",
-    };
-
-    login(userData);
-    navigate("/student");
   };
+
 
   return (
     <div

@@ -1,61 +1,88 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../components/common/Navbar";
-
+import { createCourse, getAdminCourses } from "../../api/admin.api";
+import { useNavigate } from "react-router-dom";
 const AdminCourses = () => {
-
   /* -------------------------------
-     STATE: List of courses
-     (Mock for now, later from backend)
+     STATE
   -------------------------------- */
   const [courses, setCourses] = useState([]);
-
-  /* -------------------------------
-     STATE: Form inputs
-  -------------------------------- */
   const [title, setTitle] = useState("");
-  const [duration, setDuration] = useState("");
-  const [video, setVideo] = useState(null);
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   /* -------------------------------
-     HANDLE ADD COURSE
+     LOAD COURSES (ON PAGE LOAD)
   -------------------------------- */
-  const handleAddCourse = (e) => {
-    e.preventDefault();
 
-    // Basic validation
-    if (!video) {
-      alert("Please upload a course video");
+  const navigate=useNavigate();
+
+  useEffect(() => {
+    const loadCourses = async () => {
+      try {
+        const data = await getAdminCourses();
+        setCourses(data);
+      } catch (err) {
+        setError("Failed to load courses");
+      }
+    };
+
+    loadCourses();
+  }, []);
+
+  /* -------------------------------
+     CREATE COURSE
+  -------------------------------- */
+  const handleAddCourse = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!title || !description) {
+      setError("All fields are required");
       return;
     }
 
-    // New course object (matches backend model idea)
-    const newCourse = {
-      id: Date.now().toString(),
-      title: title,
-      duration: duration,
-      videoName: video.name,
-      status: "Draft"
-    };
+    try {
+      setLoading(true);
 
-    // Update course list
-    setCourses([...courses, newCourse]);
+      await createCourse({
+        title,
+        description
+      });
 
-    // Reset form
-    setTitle("");
-    setDuration("");
-    setVideo(null);
+      // Reload course list after creation
+      const updatedCourses = await getAdminCourses();
+      setCourses(updatedCourses);
+
+      // Reset form
+      setTitle("");
+      setDescription("");
+    } catch (err) {
+      setError("Failed to create course");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 pt-16">
-      {/* Top Navbar (admin version auto-shown) */}
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-6 py-10">
-        {/* Page Heading */}
-        <h1 className="text-2xl font-semibold mb-6">
-          Manage Courses
-        </h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-semibold">
+            Manage Courses
+          </h1>
+
+          {/* <button
+            onClick={() => navigate("/admin/lessons")}
+            className="bg-indigo-600 text-white px-4 py-2 rounded"
+          >
+            + Add Lesson
+          </button> */}
+
+        </div>
 
         {/* -------------------------------
             ADD COURSE FORM
@@ -65,46 +92,33 @@ const AdminCourses = () => {
             Add New Course
           </h2>
 
-          <form
-            onSubmit={handleAddCourse}
-            className="grid grid-cols-2 gap-4"
-          >
-            {/* COURSE TITLE */}
+          {error && (
+            <p className="text-red-500 text-sm mb-4">
+              {error}
+            </p>
+          )}
+
+          <form onSubmit={handleAddCourse} className="space-y-4">
             <input
               type="text"
-              placeholder="Course Title"
+              placeholder="Course title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="border p-2 rounded col-span-2"
-              required
+              className="border p-2 rounded w-full"
             />
 
-            {/* COURSE DURATION */}
-            <input
-              type="number"
-              min={1}
-              placeholder="Duration (e.g. 6 weeks)"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-              className="border p-2 rounded col-span-2"
-              required
+            <textarea
+              placeholder="Course description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="border p-2 rounded w-full"
             />
 
-            {/* COURSE VIDEO */}
-            <input
-              type="file"
-              accept="video/*"
-              onChange={(e) => setVideo(e.target.files[0])}
-              className="border p-2 rounded col-span-2"
-              required
-            />
-
-            {/* SUBMIT BUTTON */}
             <button
-              type="submit"
-              className="bg-indigo-600 text-white px-4 py-2 rounded col-span-2"
+              disabled={loading}
+              className="bg-indigo-600 text-white px-4 py-2 rounded"
             >
-              Add Course
+              {loading ? "Creating..." : "Create Course"}
             </button>
           </form>
         </div>
@@ -117,17 +131,19 @@ const AdminCourses = () => {
             <thead className="bg-gray-50 border-b">
               <tr>
                 <th className="text-left p-3">Title</th>
-                <th className="text-left p-3">Duration</th>
-                <th className="text-left p-3">Video</th>
+                <th className="text-left p-3">Description</th>
                 <th className="text-left p-3">Status</th>
+                <th className="text-left p-3">Actions</th>
               </tr>
             </thead>
+
+
 
             <tbody>
               {courses.length === 0 ? (
                 <tr>
                   <td
-                    colSpan="4"
+                    colSpan="3"
                     className="text-center p-6 text-gray-500"
                   >
                     No courses created yet.
@@ -135,18 +151,26 @@ const AdminCourses = () => {
                 </tr>
               ) : (
                 courses.map((course) => (
-                  <tr key={course.id} className="border-b">
+                  <tr key={course._id} className="border-b">
                     <td className="p-3">{course.title}</td>
-                    <td className="p-3">{course.duration}</td>
-                    <td className="p-3 text-gray-500">
-                      {course.videoName}
-                    </td>
+                    <td className="p-3">{course.description}</td>
                     <td className="p-3">
-                      <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs">
-                        {course.status}
+                      <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">
+                        Published
                       </span>
                     </td>
+                    <td className="p-3">
+                      <button
+                        onClick={() =>
+                          navigate(`/admin/lessons?courseId=${course._id}`)
+                        }
+                        className="text-indigo-600 text-sm font-medium hover:underline"
+                      >
+                        Add Lesson
+                      </button>
+                    </td>
                   </tr>
+
                 ))
               )}
             </tbody>

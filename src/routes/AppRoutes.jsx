@@ -13,6 +13,7 @@ import AdminUsers from '../pages/admin/AdminUsers';
 import Register from "../pages/auth/Register";
 import CourseDetails from '../pages/student/CourseDetails';
 import LessonQuiz from '../pages/student/LessonQuiz'
+import AdminLessons from '../pages/admin/AdminLessons';
 
 const router=createBrowserRouter(
      [
@@ -61,14 +62,14 @@ const router=createBrowserRouter(
                </RoleProtectedRoute>
                )
           },
-          // {
-          //      path: "/student/lesson/:id",
-          //      element: (
-          //      <RoleProtectedRoute allowedRoles={["student"]}>
-          //           <LessonPlayer />
-          //      </RoleProtectedRoute>
-          //      )
-          // },
+          {
+               path: "/admin/lessons",
+               element: (
+               <RoleProtectedRoute allowedRoles={["admin"]}>
+                    <AdminLessons />
+               </RoleProtectedRoute>
+               )
+          },
           {
                path: "/admin/courses",
                element: (
