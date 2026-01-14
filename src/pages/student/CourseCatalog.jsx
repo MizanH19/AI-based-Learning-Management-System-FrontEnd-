@@ -68,19 +68,30 @@ const CourseCatalog = () => {
   const thumbnail=["https://cdn.pixabay.com/photo/2021/08/04/13/06/software-developer-6521720_1280.jpg",
     'https://cdn.pixabay.com/photo/2023/10/10/05/52/website-8305451_1280.jpg',
     'https://cdn.pixabay.com/photo/2023/06/17/13/37/computer-8070002_960_720.jpg',
-    'https://cdn.pixabay.com/photo/2018/02/16/10/23/web-3157323_1280.jpg'
+    'https://cdn.pixabay.com/photo/2018/02/16/10/23/web-3157323_1280.jpg',
+    'https://images.pexels.com/photos/12899188/pexels-photo-12899188.jpeg',
+    'https://images.pexels.com/photos/270488/pexels-photo-270488.jpeg'
   ]
 
   return (
     <section className="space-y-4 pt-16">
       <Navbar />
 
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-10 px-6 rounded-xl mb-8">
-        <h1 className="text-3xl font-bold">Continue your learning journey</h1>
-        <p className="opacity-90 mt-2">
-          Pick up where you left off or explore something new.
+      <div className="relative bg-gradient-to-r from-indigo-600 to-purple-600 
+      text-white py-14 px-8 rounded-2xl mb-10 overflow-hidden">
+
+        <div className="absolute -top-10 -right-10 w-60 h-60 
+        bg-white/10 rounded-full blur-3xl" />
+
+        <h1 className="text-4xl font-extrabold">
+          Explore New Skills 
+        </h1>
+
+        <p className="mt-3 max-w-xl text-white/90">
+          Learn industry-ready skills, track progress, and grow faster with AI-powered guidance.
         </p>
       </div>
+
 
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-6xl mx-auto px-6 py-10">
@@ -107,14 +118,14 @@ const CourseCatalog = () => {
                                   ? "Enrolled"
                                   : enrollingId === course._id
                                   ? "Enrolling..."
-                                  : "Enroll"
+                                  : "See Details"
                               }
                               disabled={
                                 enrollingId === course._id ||
                                 enrolledCourseIds.includes(course._id)
                               }
 
-                  onAction={() => handleEnroll(course._id)}
+                  // onAction={() => handleEnroll(course._id)}
                 />
               ))}
             </div>

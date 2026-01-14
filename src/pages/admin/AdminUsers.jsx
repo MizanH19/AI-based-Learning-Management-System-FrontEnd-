@@ -52,13 +52,12 @@ const AdminUsers = () => {
                   <td className="p-3 capitalize">{user.role}</td>
                   <td className="p-3">
                     <span
-                      className={`px-2 py-1 rounded text-xs ${
-                        user.status === "active"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                      }`}
+                      className={`px-2 py-1 rounded text-xs 
+                           bg-green-100 text-green-700`
+                          // : "bg-red-100 text-red-700"
+                      }
                     >
-                      {/* {user.status} */}
+                      Active
                     </span>
                   </td>
                 </tr>

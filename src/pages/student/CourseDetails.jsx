@@ -23,6 +23,8 @@ function CourseDetails() {
         
         const res = await api.get(`/student/courses/${courseId}`);
         setCourse(res.data.data);
+        console.log(res.data.data);
+        
         setIsEnrolled(res.data.data.isEnrolled);
       } catch (err) {
         console.error(err);

@@ -34,10 +34,12 @@ const Login = () => {
        *     role
        *   }
        */
-      const { token, role } = response.data.data;
+      console.log(response.data.data);
+      
+      const { token, role,name } = response.data.data;
 
       // Use AuthContext login (CORRECT)
-      login({ token, role });
+      login({ token, role, name });
 
       // Redirect based on role
       if (role === "admin") {

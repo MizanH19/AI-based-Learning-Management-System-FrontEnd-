@@ -11,8 +11,8 @@ export const AuthProvider = ({ children }) => {
   });
 
   // 2️⃣ Login → save to state + localStorage
-  const login = ({ token, role }) => {
-  const authData = { token, role };
+  const login = ({ token, role ,name }) => {
+  const authData = { token, role,name };
   setAuth(authData);
   localStorage.setItem("auth", JSON.stringify(authData));
 };

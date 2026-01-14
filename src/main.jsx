@@ -7,12 +7,12 @@ import { ThemeProvider } from './context/ThemeContext.jsx'
 import { EnrollmentProvider } from './context/EnrollmentContext.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <AuthProvider>
       <EnrollmentProvider>
         <App />
       </EnrollmentProvider>
     </AuthProvider>
     
-  </StrictMode>,
+  // {/* </StrictMode>, */}
 )

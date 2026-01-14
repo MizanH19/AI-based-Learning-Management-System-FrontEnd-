@@ -7,7 +7,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-
+  // console.log(auth.name);
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [openProfile, setOpenProfile] = useState(false);
 
@@ -220,7 +221,11 @@ useEffect(() => {
 
       {/* ADMIN NAVBAR (UNCHANGED) */}
       {auth?.role === "admin" && (
+        
         <div className="flex items-center gap-6 text-sm text-gray-700">
+          <span className="text-xl font-semibold">
+            ADMIN 
+          </span>
           <span
             className={`cursor-pointer ${isActive("/admin")}`}
             onClick={() => navigate("/admin")}

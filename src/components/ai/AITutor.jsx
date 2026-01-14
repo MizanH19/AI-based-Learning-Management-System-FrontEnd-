@@ -1,37 +1,55 @@
 import { useState } from "react";
+ import api from "../../api/axios"; // ⬅️ make sure this import exists
 
 const AITutor = () => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
-  const sendMessage = () => {
-    if (!input.trim()) return;
+ 
+const sendMessage = async () => {
+  if (!input.trim()) return;
 
-    // user message
-    const userMessage = { sender: "user", text: input };
+  const userMessage = { sender: "user", text: input };
 
-    // dummy AI reply
+  // show user message immediately
+  setMessages((prev) => [...prev, userMessage]);
+  setInput("");
+
+  try {
+    const res = await api.post("/ai/ask", {
+      question: userMessage.text,
+    });
+
     const aiMessage = {
       sender: "ai",
-      text: "I can help explain concepts, answer doubts, and guide your study."
+      text: res.data.data, // backend sends text here
     };
 
-    setMessages([...messages, userMessage, aiMessage]);
-    setInput("");
-  };
+    setMessages((prev) => [...prev, aiMessage]);
+  } catch (err) {
+    console.error("AI error:", err);
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        sender: "ai",
+        text: `⚠️ AI failed to respond. Please try again.${err}`,
+      },
+    ]);
+  }
+};
+
 
   return (
     <>
       {/* Floating Button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 z-52
-        bg-indigo-600 text-white
-        px-5 py-3 rounded-full
-        shadow-lg
-        hover:bg-indigo-700
-        transition-all"
+        className="fixed bottom-6 right-6 z-50
+  bg-gradient-to-r from-indigo-600 to-purple-600
+  text-white px-5 py-3 rounded-full
+  shadow-xl hover:scale-105 transition"
       >
         AI Tutor
       </button>

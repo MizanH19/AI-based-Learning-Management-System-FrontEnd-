@@ -1,4 +1,4 @@
-import React, { useContext,useEffect } from "react";
+import React, { useContext,useEffect,useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../../components/common/Navbar";
@@ -6,13 +6,28 @@ import AITutor from "../../components/ai/AITutor";
 import { mockCourses } from "../../data/mockCourses";
 import CourseCard from "./CourseCard";
 import Footer from "../../components/common/Footer";
-
+import api from "../../services/api";
 
 function StudentHome() {
   const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = React.useState(0);
   const location = useLocation();
+  const [courses,setCourses]=useState([])
+  const [error,setError]=useState("")
+
+  useEffect(()=>{
+    const fetchCourses=async () => {
+      try {
+        const res=await api.get("/student/courses")
+        setCourses(res.data.data)
+      } catch (error) {
+        console.error("Failed to fetch courses:", error);
+        setError("Failed to load courses");
+      }
+    }
+    fetchCourses()
+  })
 
   useEffect(() => {
   if (location.state?.scrollTo) {
@@ -22,6 +37,8 @@ function StudentHome() {
     }
   }
 }, [location]);
+
+
 
   const nextSlide = () => {
     setActiveSlide((prev) =>
@@ -48,7 +65,13 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, [heroSlides.length]);
 
-
+const thumbnail=["https://cdn.pixabay.com/photo/2021/08/04/13/06/software-developer-6521720_1280.jpg",
+    'https://cdn.pixabay.com/photo/2023/10/10/05/52/website-8305451_1280.jpg',
+    'https://cdn.pixabay.com/photo/2023/06/17/13/37/computer-8070002_960_720.jpg',
+    'https://cdn.pixabay.com/photo/2018/02/16/10/23/web-3157323_1280.jpg',
+    'https://images.pexels.com/photos/12899188/pexels-photo-12899188.jpeg',
+    'https://images.pexels.com/photos/270488/pexels-photo-270488.jpeg'
+  ]
 
 
 
@@ -77,7 +100,7 @@ useEffect(() => {
 
   return (
 
-    <div className="min-h-screen pt-16" style={{ background: "var(--bg)", color: "var(--text)" }}>
+    <div className="min-h-screen pt-16 bg-gray-50 animate-fadeIn" style={{ background: "var(--bg)", color: "var(--text)" }}>
 
       <Navbar />
     <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-10 px-6 rounded-xl mb-8">
@@ -94,7 +117,7 @@ useEffect(() => {
 
       <div className="relative overflow-hidden rounded-2xl 
                 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500
-                shadow-2xl">
+                shadow-2xl  animate-slideDown">
         <div className="absolute inset-0 bg-black/10"></div>
 
         <div
@@ -243,8 +266,13 @@ useEffect(() => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {mockCourses.slice(0, 4).map((course) => (
-              <CourseCard key={course.id} course={course} />
+            {courses.slice(0, 4).map((course,index) => (
+              <CourseCard key={course.id} course={{
+                    id: course._id,
+                    title: course.title,
+                    description: course.description,
+                    thumbnail: thumbnail[index%thumbnail.length],
+                  }} />
             ))}
           </div>
         </section>
@@ -266,10 +294,14 @@ useEffect(() => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {mockCourses
-              .filter(course => course.isTrending)
-              .map((course) => (
-                <CourseCard key={course.id} course={course} />
+            {
+              courses.slice(0, 3).map((course,index) => (
+                <CourseCard key={course.id} course={{
+                    id: course._id,
+                    title: course.title,
+                    description: course.description,
+                    thumbnail: thumbnail[index%thumbnail.length],
+                  }} />
               ))}
           </div>
         </section>
@@ -291,10 +323,14 @@ useEffect(() => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {mockCourses
-              .filter(course => course.isNew)
-              .map((course) => (
-                <CourseCard key={course.id} course={course} />
+            {courses
+              .map((course,index) => (
+                <CourseCard key={course.id} course={{
+                    id: course._id,
+                    title: course.title,
+                    description: course.description,
+                    thumbnail: thumbnail[index%thumbnail.length],
+                  }} />
               ))}
           </div>
         </section>
@@ -316,10 +352,15 @@ useEffect(() => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {mockCourses
-              .filter(course => course.isTopPick)
-              .map((course) => (
-                <CourseCard key={course.id} course={course} />
+            {courses
+
+              .slice(0, 6).map((course,index) => (
+               <CourseCard key={course.id} course={{
+                    id: course._id,
+                    title: course.title,
+                    description: course.description,
+                    thumbnail: thumbnail[index%thumbnail.length],
+                  }} />
               ))}
           </div>
         </section>

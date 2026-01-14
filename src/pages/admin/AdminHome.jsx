@@ -42,7 +42,7 @@ function AdminHome() {
             Manage users, courses, analytics, and AI settings
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* USERS */}
             <div className="bg-white p-5 rounded-lg border">
               <p className="text-sm text-gray-500">Total Users</p>
