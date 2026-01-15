@@ -1,6 +1,6 @@
 import { useState } from "react";
  import api from "../../api/axios"; // ⬅️ make sure this import exists
-
+import ReactMarkdowm from 'react-markdown'
 const AITutor = () => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -56,7 +56,13 @@ const sendMessage = async () => {
 
       {/* Chat Panel */}
       {open && (
-        <div className="fixed bottom-25 right-6 w-80 bg-white border rounded-lg shadow-lg flex flex-col">
+        <div
+  className="fixed bottom-24 right-6 
+  w-96 h-[500px]
+  bg-white border rounded-xl shadow-2xl 
+  flex flex-col overflow-hidden z-50"
+>
+
           
           {/* Header */}
           <div className="p-3 border-b font-semibold text-gray-800">
@@ -74,7 +80,9 @@ const sendMessage = async () => {
                     : "bg-gray-100 text-left"
                 }`}
               >
+                <ReactMarkdowm>
                 {msg.text}
+                </ReactMarkdowm>
               </div>
             ))}
           </div>

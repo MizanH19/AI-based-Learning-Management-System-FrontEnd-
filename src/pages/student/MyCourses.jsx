@@ -20,7 +20,8 @@ const MyCourses = () => {
       try {
  
         const res = await api.get("/student/my-courses");
-
+        console.log(res.data.data);
+        
         /**
          * Expected backend shape:
          * [

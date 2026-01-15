@@ -48,19 +48,19 @@ useEffect(() => {
 const [showNavbar, setShowNavbar] = useState(true);
 const [lastScrollY, setLastScrollY] = useState(0);
 
-useEffect(() => {
-  const handleScroll = () => {
-    if (window.scrollY > lastScrollY) {
-      setShowNavbar(false); // scrolling down
-    } else {
-      setShowNavbar(true); // scrolling up
-    }
-    setLastScrollY(window.scrollY);
-  };
+// useEffect(() => {
+//   const handleScroll = () => {
+//     if (window.scrollY > lastScrollY) {
+//       setShowNavbar(false); // scrolling down
+//     } else {
+//       setShowNavbar(true); // scrolling up
+//     }
+//     setLastScrollY(window.scrollY);
+//   };
 
-  window.addEventListener("scroll", handleScroll);
-  return () => window.removeEventListener("scroll", handleScroll);
-}, [lastScrollY]);
+//   window.addEventListener("scroll", handleScroll);
+//   return () => window.removeEventListener("scroll", handleScroll);
+// }, [lastScrollY]);
 
 
 

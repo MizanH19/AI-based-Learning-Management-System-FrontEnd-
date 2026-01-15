@@ -3,7 +3,7 @@ import BackToHome from "../../components/common/BackToHome";
 import { useParams,useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getCourseDetails } from "../../api/student.api";
-import { completeLesson } from "../../api/progress.api";
+import { completeLesson, getProgress } from "../../api/progress.api";
 import {askAI} from '../../api/ai.api'
 
 const LessonPlayer = () => {
@@ -15,7 +15,7 @@ const LessonPlayer = () => {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
-
+  const [progress,setProgress]=useState(0)
 
   useEffect(() => {
     const fetchLesson = async () => {
@@ -41,6 +41,38 @@ const LessonPlayer = () => {
     fetchLesson();
   }, [courseId, lessonId]);
 
+  useEffect(()=>{
+    
+        const loadProgress = async () => {
+        const data = await getProgress(courseId);
+        setProgress(data);
+        console.log(data);
+        
+    
+  }
+  loadProgress()
+},[courseId])
+
+const isCompleted = progress?.completedLessons?.includes(lessonId);
+
+
+  const handleMarkComplete = async () => {
+  try {
+    await completeLesson(courseId, lessonId);
+    alert("Lesson marked as complete ✅");
+
+
+  } catch (err) {
+    if (err.response?.status === 400) {
+      alert(err.response.data.message); 
+      // "Complete previous lessons first"
+    } else {
+      alert("Failed to mark lesson complete");
+    }
+  }
+};
+
+
   const handleAskAI = async () => {
     if (!question.trim()) return;
 
@@ -52,6 +84,8 @@ const LessonPlayer = () => {
         question
       });
       setAnswer(res.answer);
+      console.log(res.answer);
+      
     } catch {
       alert("AI failed to respond");
     } finally {
@@ -114,10 +148,11 @@ const LessonPlayer = () => {
         {/* ACTIONS (HOOK READY) */}
         <div className="flex gap-4">
           <button
-            onClick={() => completeLesson(courseId, lessonId)}
-            className="bg-green-600 text-white px-4 py-2 rounded"
+            onClick={handleMarkComplete}
+            className="bg-green-600 text-white px-4 py-2 rounded
+        {}"
           >
-            Mark as Complete
+            {isCompleted?"Completed":"Mark as Complete"}
           </button>
 
           <button
