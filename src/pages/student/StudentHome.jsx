@@ -272,7 +272,9 @@ const thumbnail=["https://cdn.pixabay.com/photo/2021/08/04/13/06/software-develo
                     title: course.title,
                     description: course.description,
                     thumbnail: thumbnail[index%thumbnail.length],
-                  }} />
+                    
+                  }} 
+                  actionLabel="Explore " />
             ))}
           </div>
         </section>
@@ -301,7 +303,8 @@ const thumbnail=["https://cdn.pixabay.com/photo/2021/08/04/13/06/software-develo
                     title: course.title,
                     description: course.description,
                     thumbnail: thumbnail[index%thumbnail.length],
-                  }} />
+                  }}
+                  actionLabel="Explore" />
               ))}
           </div>
         </section>
@@ -330,7 +333,8 @@ const thumbnail=["https://cdn.pixabay.com/photo/2021/08/04/13/06/software-develo
                     title: course.title,
                     description: course.description,
                     thumbnail: thumbnail[index%thumbnail.length],
-                  }} />
+                  }}
+                  actionLabel="Fresh Arrivals" />
               ))}
           </div>
         </section>
@@ -360,7 +364,8 @@ const thumbnail=["https://cdn.pixabay.com/photo/2021/08/04/13/06/software-develo
                     title: course.title,
                     description: course.description,
                     thumbnail: thumbnail[index%thumbnail.length],
-                  }} />
+                  }}
+                  actionLabel="Recommended" />
               ))}
           </div>
         </section>
