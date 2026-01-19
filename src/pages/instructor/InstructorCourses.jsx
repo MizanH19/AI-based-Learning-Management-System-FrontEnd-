@@ -1,26 +1,52 @@
 import { useNavigate } from "react-router-dom"
 import Navbar from "../../components/common/Navbar";
+import { useEffect, useState } from "react";
+import { getInstructorCourses } from "../../api/instructor.api";
+
 
 const InstructorCourses=()=>{
      const navigate = useNavigate();
+     const [courses,setCourses]=useState([])
+     const [loading,setLoading]=useState(true);
+//      //? Mock Data
+//        const courses = [
+//     {
+//       id: "1",
+//       title: "Full Stack Web Development",
+//       description: "Learn MERN stack from scratch",
+//       lessonsCount: 12,
+//       studentsCount: 58,
+//     },
+//     {
+//       id: "2",
+//       title: "JavaScript Mastery",
+//       description: "Deep dive into modern JavaScript",
+//       lessonsCount: 8,
+//       studentsCount: 34,
+//     },
+//   ];
 
-     //? Mock Data
-       const courses = [
-    {
-      id: "1",
-      title: "Full Stack Web Development",
-      description: "Learn MERN stack from scratch",
-      lessonsCount: 12,
-      studentsCount: 58,
-    },
-    {
-      id: "2",
-      title: "JavaScript Mastery",
-      description: "Deep dive into modern JavaScript",
-      lessonsCount: 8,
-      studentsCount: 34,
-    },
-  ];
+
+     useEffect(()=>{
+          const loadCourses=async()=>{
+               try{
+                    const data =await getInstructorCourses();
+                    console.log(data);
+                    setCourses(data)
+                    console.log(courses);
+                    console.log(courses.length);
+                    
+                    
+                    // setCourses(data);
+               }catch(err){
+                    console.error("Failed to load instructor courses",err);
+               }finally{
+                    setLoading(false);
+               }
+          }
+
+          loadCourses();
+     },[]);
 
   return(
      <div className="min-h-screen bg-gray-50 pt-16">
@@ -41,20 +67,22 @@ const InstructorCourses=()=>{
 
           {/* //*Courses */}
           <div className="max-w-7xl mx-auto px-6 py-12">
-               {courses.length===0?(
-                    <div className="bg-white p-10 rounded-2xl text-center border">
-                         <h2 className="text-xl font-semibold text-gray-800">
-                              No courses created yet
-                         </h2>
-                         <p className="text-gray-500 mt-2">
-                              Start by creating your first course
-                         </p>
-                         <button className="mt-6 bg-indigo-600 text-white
-                         px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
-                              Create Course
-                         </button>
-                    </div>
-               ):(
+               {loading?(<p className="text-center text-gray-500"> Loading courses...</p>
+               ):
+               // courses.length?(
+               //      <div className="bg-white p-10 rounded-2xl text-center border">
+               //           <h2 className="text-xl font-semibold text-gray-800">
+               //                No courses created yet
+               //           </h2>
+               //           <p className="text-gray-500 mt-2">
+               //                Start by creating your first course
+               //           </p>
+               //           <button className="mt-6 bg-indigo-600 text-white
+               //           px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
+               //                Create Course
+               //           </button>
+               //      </div>
+               // ):(
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                          {courses.map((course)=>(
                               <div
@@ -80,7 +108,7 @@ const InstructorCourses=()=>{
                                    <div className="flex flex-wrap gap-3 mt-6">
                                    <button
                                         onClick={() =>
-                                        navigate(`/instructor/course/${course.id}`)
+                                        navigate(`/instructor/course/${course._id}`)
                                         }
                                         className="bg-indigo-600 text-white
                                         px-4 py-2 rounded text-sm
@@ -93,6 +121,9 @@ const InstructorCourses=()=>{
                                         className="border border-indigo-600 text-indigo-600
                                         px-4 py-2 rounded text-sm
                                         hover:bg-indigo-50 transition"
+                                        onClick={() =>
+                                             navigate(`/instructor/course/${course._id}/lesson`)
+                                        }
                                    >
                                         Add Lesson
                                    </button>
@@ -101,6 +132,9 @@ const InstructorCourses=()=>{
                                         className="border text-gray-600
                                         px-4 py-2 rounded text-sm
                                         hover:bg-gray-100 transition"
+                                        onClick={() =>
+                                           navigate(`/instructor/course/${course._id}/students`)
+                                        }
                                    >
                                         View Students
                                    </button>
@@ -108,8 +142,11 @@ const InstructorCourses=()=>{
                               </div>
                          ))}
                     </div>
-               )}
+               }
           </div>
      </div>
   )
+
 }
+
+  export default InstructorCourses;

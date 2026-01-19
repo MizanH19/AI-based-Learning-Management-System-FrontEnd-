@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../../components/common/Navbar';
+import { createInstructorCourse } from '../../api/instructor.api';
 
 const CreateCourse = () => {
      const navigate= useNavigate();
@@ -19,14 +20,14 @@ const CreateCourse = () => {
           try {
                setLoading(true)
 
-               //*Backend will come here later
+               await createInstructorCourse({
+                    title,
+                    description,
+               })
                console.log("Course Created:",{title,description});
 
-               //*simulate delay
-               setTimeout(()=>{
-                    alert("Course created successfully!!");
-                    navigate("/instructor/courses")
-               },800);
+               alert("Course created successfully ✅");
+               navigate("/instructor/courses");
           } catch (error) {
                alert("Failed to create course")
           }

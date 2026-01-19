@@ -24,10 +24,12 @@ function CourseDetails() {
         const res = await api.get(`/student/courses/${courseId}`);
         setCourse(res.data.data);
         console.log(res.data.data);
+        console.log(course);
         
         setIsEnrolled(res.data.data.isEnrolled);
       } catch (err) {
         console.error(err);
+        // alert("not found")
         setError("Course not found");
       } finally {
         setLoading(false);

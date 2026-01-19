@@ -1,41 +1,70 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../components/common/Navbar";
+import { getCourseDetails } from "../../api/student.api";
+import { deleteLesson, getCourseProgress, getCourseStudents } from "../../api/instructor.api";
 
 const InstructorCourseManage = () => {
   const { courseId } = useParams();
 
-  // 🔹 Mock course info
-  const course = {
-    title: "Full Stack Web Development",
-    description: "Learn MERN stack from scratch",
-  };
+  const [course,setCourse]=useState(null);
+  const [lessons,setLessons]=useState([])
+  const [students,setStudents]=useState([])
+  const [summary,setSummary]=useState(null)
+  const [loading,setLoading]=useState(true)
 
-  // 🔹 Mock lessons
-  const [lessons, setLessons] = useState([
-    {
-      id: "l1",
-      title: "Introduction",
-      type: "video",
-      order: 1,
-    },
-    {
-      id: "l2",
-      title: "HTML Basics",
-      type: "pdf",
-      order: 2,
-    },
-    {
-      id: "l3",
-      title: "Quiz 1",
-      type: "quiz",
-      order: 3,
-    },
-  ]);
 
-  const handleDeleteLesson = (lessonId) => {
+  useEffect(()=>{
+    const loadData= async()=>{
+      try {
+      const courseRes=await getCourseDetails(courseId);
+      const studentRes = await getCourseStudents(courseId);
+      const progressRes =await getCourseProgress(courseId);
+
+      setCourse(courseRes)
+      setStudents(studentRes);
+      setLessons(courseRes.lessons||[])
+      setSummary(progressRes.summary);
+    } catch (err){
+      console.error(err);
+    }finally{
+      setLoading(false)
+    }
+  }
+
+    loadData();
+  },[courseId]);
+  // // 🔹 Mock course info
+  // const course = {
+  //   title: "Full Stack Web Development",
+  //   description: "Learn MERN stack from scratch",
+  // };
+
+  // // 🔹 Mock lessons
+  // const [lessons, setLessons] = useState([
+  //   {
+  //     id: "l1",
+  //     title: "Introduction",
+  //     type: "video",
+  //     order: 1,
+  //   },
+  //   {
+  //     id: "l2",
+  //     title: "HTML Basics",
+  //     type: "pdf",
+  //     order: 2,
+  //   },
+  //   {
+  //     id: "l3",
+  //     title: "Quiz 1",
+  //     type: "quiz",
+  //     order: 3,
+  //   },
+  // ]);
+
+  const handleDeleteLesson = async (lessonId) => {
     if (!window.confirm("Delete this lesson?")) return;
-
+    await deleteLesson(lessonId);
     setLessons((prev) =>
       prev.filter((lesson) => lesson.id !== lessonId)
     );
@@ -55,6 +84,16 @@ const InstructorCourseManage = () => {
             {course.description}
           </p>
         </div>
+
+         {/* SUMMARY */}
+        {summary && (
+          <div className="grid grid-cols-4 gap-4">
+            <Stat label="Students" value={summary.totalStudents} />
+            <Stat label="Completed" value={summary.completed} />
+            <Stat label="In Progress" value={summary.inProgress} />
+            <Stat label="Restricted" value={summary.restricted} />
+          </div>
+        )}
 
         {/* ADD LESSON ACTIONS */}
         <div className="flex flex-wrap gap-4">
@@ -76,16 +115,16 @@ const InstructorCourseManage = () => {
 
         {/* LESSON LIST */}
         <div className="space-y-4">
-          {lessons.map((lesson) => (
+          {lessons.map((lesson,i) => (
             <div
-              key={lesson.id}
+              key={lesson._id}
               className="bg-white border rounded-xl p-5
               flex items-center justify-between
               hover:shadow transition"
             >
               <div>
                 <p className="font-semibold text-gray-800">
-                  {lesson.order}. {lesson.title}
+                  {i+1}. {lesson.title}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
                   Type: {lesson.type.toUpperCase()}
@@ -93,7 +132,7 @@ const InstructorCourseManage = () => {
               </div>
 
               <button
-                onClick={() => handleDeleteLesson(lesson.id)}
+                onClick={() => handleDeleteLesson(lesson._id)}
                 className="text-red-500 text-sm hover:underline"
               >
                 Delete
@@ -101,9 +140,40 @@ const InstructorCourseManage = () => {
             </div>
           ))}
         </div>
+
+         {/* STUDENTS */}
+        <div className="bg-white p-6 rounded-xl border">
+          <h2 className="text-xl font-semibold mb-4">
+            Enrolled Students
+          </h2>
+
+          {students.map((s) => (
+            <div
+              key={s.studentId}
+              className="flex justify-between border-b py-3"
+            >
+              <div>
+                <p className="font-medium">{s.name}</p>
+                <p className="text-xs text-gray-500">{s.email}</p>
+              </div>
+
+              <div className="text-sm">
+                {s.progressPercentage}%{" "}
+                {s.isRestricted && "🚫"}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
+
+const Stat = ({ label, value }) => (
+  <div className="bg-white p-4 rounded-xl border text-center">
+    <p className="text-sm text-gray-500">{label}</p>
+    <p className="text-2xl font-bold">{value}</p>
+  </div>
+);
 
 export default InstructorCourseManage;

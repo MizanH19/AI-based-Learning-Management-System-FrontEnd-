@@ -29,6 +29,10 @@ const RoleProtectedRoute = ({ children, allowedRoles }) => {
       return <Navigate to="/admin" replace />;
     }
 
+    if (auth.role === "instructor") {
+      return <Navigate to="/instructor" replace />;
+    }
+
     if (auth.role === "student") {
       return <Navigate to="/student" replace />;
     }

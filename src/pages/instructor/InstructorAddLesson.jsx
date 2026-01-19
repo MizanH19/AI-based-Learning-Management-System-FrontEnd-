@@ -1,32 +1,58 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/common/Navbar";
+import { addLesson } from "../../api/instructor.api";
 
 const InstructorAddLesson = () => {
   const { courseId } = useParams(); // course context
   const navigate = useNavigate();
-
+  const [description,setDescription]=useState("")
+  const [loading,setLoading]=useState("")
   // lesson form state
   const [type, setType] = useState("video");
   const [title, setTitle] = useState("");
   const [order, setOrder] = useState(1);
   const [file, setFile] = useState(null);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // 🔹 Mock submit
-    console.log({
-      courseId,
-      type,
-      title,
-      order,
-      file,
-    });
+  if (!title.trim()) {
+    alert("Lesson title is required");
+    return;
+  }
 
-    alert("Lesson created (mock)");
-//     navigate(-1); // go back to manage page
-  };
+  if (type !== "quiz" && !file) {
+    alert("Please upload a file");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("type", type);
+    formData.append("courseId", courseId);
+
+    if (type !== "quiz") {
+      formData.append("file", file);
+    }
+
+    await addLesson(formData);
+
+    alert("Lesson added successfully ✅");
+    navigate(-1);
+  } catch (err) {
+    alert(
+      err.response?.data?.message || "Failed to add lesson"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
@@ -92,6 +118,21 @@ const InstructorAddLesson = () => {
             />
           </div>
 
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Lesson Description
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+              required
+              className="w-full border rounded-lg px-4 py-2 focus:ring-2
+              focus:ring-indigo-500 outline-none"
+            />
+          </div>
+
+
           {/* ORDER */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -150,13 +191,15 @@ const InstructorAddLesson = () => {
               type="submit"
               className="bg-indigo-600 text-white px-6 py-2 rounded-lg
               hover:bg-indigo-700 transition"
+              disabled={loading}
             >
-              Create Lesson
+              {loading?"Creating...":"Create Lesson"}
             </button>
 
             <button
               type="button"
               onClick={() => navigate(-1)}
+
               className="border px-6 py-2 rounded-lg hover:bg-gray-100"
             >
               Cancel

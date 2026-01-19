@@ -1,10 +1,12 @@
-// import Navbar from "../../components/common/Navbar";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../../components/common/Navbar";
 
 
 const InstructorHome=()=>{
+     const navigate=useNavigate()
      return(
           <div className="min-h-screen bg-gray-50 pt-16">
-               {/* <Navbar/> */}
+               <Navbar/>
 
                {/* //*Header */}
 
@@ -77,7 +79,10 @@ const InstructorHome=()=>{
 
                               <button className="mt-6 px-6 py-3 rounded-lg
                               bg-indigo-600 text-white font-medium
-                              hover:bg-indigo-700 transition">
+                              hover:bg-indigo-700 transition"
+                              onClick={()=>{
+                                   navigate(`/instructor/courses/create`)
+                              }}>
                                    Create Course
                               </button>
                          </div>
