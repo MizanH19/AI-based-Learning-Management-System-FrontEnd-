@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Navbar from "../../components/common/Navbar";
-import { createCourse, getAdminCourses } from "../../api/admin.api";
+import { createCourse, getAdminCourses,publishCourse,unpublishCourse } from "../../api/admin.api";
 import { useNavigate } from "react-router-dom";
 const AdminCourses = () => {
   /* -------------------------------
@@ -65,6 +65,23 @@ const AdminCourses = () => {
     }
   };
 
+  const handleTogglePublish = async (courseId, isPublished) => {
+  try {
+    if (isPublished) {
+      await unpublishCourse(courseId);
+    } else {
+      await publishCourse(courseId);
+    }
+
+    // refresh list after toggle
+    const updatedCourses = await getAdminCourses();
+    setCourses(updatedCourses);
+  } catch (err) {
+    setError("Failed to update course status");
+  }
+};
+
+
   return (
     <div className="min-h-screen bg-gray-100 pt-16">
       <Navbar />
@@ -87,7 +104,7 @@ const AdminCourses = () => {
         {/* -------------------------------
             ADD COURSE FORM
         -------------------------------- */}
-        <div className="bg-white p-6 border rounded mb-10">
+        {/* <div className="bg-white p-6 border rounded mb-10">
           <h2 className="text-lg font-semibold mb-4">
             Add New Course
           </h2>
@@ -121,7 +138,7 @@ const AdminCourses = () => {
               {loading ? "Creating..." : "Create Course"}
             </button>
           </form>
-        </div>
+        </div> */}
 
         {/* -------------------------------
             COURSE LIST TABLE
@@ -155,19 +172,31 @@ const AdminCourses = () => {
                     <td className="p-3">{course.title}</td>
                     <td className="p-3">{course.description}</td>
                     <td className="p-3">
-                      <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">
-                        Published
+                      <span
+                        className={`px-2 py-1 rounded text-xs ${
+                          course.isPublished
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {course.isPublished ? "Published" : "Unpublished"}
                       </span>
+
                     </td>
                     <td className="p-3">
                       <button
                         onClick={() =>
-                          navigate(`/admin/lessons?courseId=${course._id}`)
+                          handleTogglePublish(course._id, course.isPublished)
                         }
-                        className="text-indigo-600 text-sm font-medium hover:underline"
+                        className={`px-3 py-1 rounded text-xs font-medium transition ${
+                          course.isPublished
+                            ? "bg-red-100 text-red-600 hover:bg-red-200"
+                            : "bg-green-100 text-green-700 hover:bg-green-200"
+                        }`}
                       >
-                        Add Lesson
+                        {course.isPublished ? "Unpublish" : "Publish"}
                       </button>
+
                     </td>
                   </tr>
 

@@ -1,5 +1,5 @@
 import Navbar from "../../components/common/Navbar";
-import { getAllUsers } from "../../api/admin.api";
+import { getAllUsers,disableUser,enableUser } from "../../api/admin.api";
 import { useEffect,useState } from "react";
 
 const AdminUsers = () => {
@@ -22,6 +22,30 @@ const AdminUsers = () => {
   
       loadUsersData();
     }, []);
+
+    const handleToggleStatus = async (userId, isActive) => {
+      try {
+        console.log(userId);
+        
+        if (isActive) {
+          const res=await disableUser(userId);
+          console.log(res);
+          
+        } else {
+          await enableUser(userId);
+        }
+
+        // update UI locally (NO refetch)
+        setUser((prev) =>
+          prev.map((u) =>
+            u._id === userId ? { ...u, isActive: !isActive } : u
+          )
+        );
+      } catch (err) {
+        alert("Failed to update user status");
+      }
+    };
+
 
   return (
     <div className="min-h-screen bg-gray-100 pt-16">
@@ -51,14 +75,18 @@ const AdminUsers = () => {
                   <td className="p-3">{user.email}</td>
                   <td className="p-3 capitalize">{user.role}</td>
                   <td className="p-3">
-                    <span
-                      className={`px-2 py-1 rounded text-xs 
-                           bg-green-100 text-green-700`
-                          // : "bg-red-100 text-red-700"
-                      }
+                    <button
+                      onClick={() => handleToggleStatus(user._id, user.isActive)}
+                      className={`px-3 py-1 rounded text-xs font-medium transition
+                        ${
+                          user.isActive
+                            ? "bg-green-100 text-green-700 hover:bg-green-200"
+                            : "bg-red-100 text-red-700 hover:bg-red-200"
+                        }`}
                     >
-                      Active
-                    </span>
+                      {user.isActive ? "Active" : "Disabled"}
+                    </button>
+
                   </td>
                 </tr>
               ))}
@@ -81,15 +109,18 @@ const AdminUsers = () => {
                   Role: {user.role}
                 </span>
 
-                {/* <span
-                  className={`px-2 py-1 rounded text-xs ${
-                    user.status === "active"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                  }`}
+                <button
+                  onClick={() => handleToggleStatus(user._id, user.isActive)}
+                  className={`mt-3 px-3 py-1 rounded text-xs font-medium
+                    ${
+                      user.isActive
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
                 >
-                  {user.status}
-                </span> */}
+                  {user.isActive ? "Disable User" : "Enable User"}
+                </button>
+
               </div>
             </div>
           ))}

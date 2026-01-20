@@ -30,6 +30,7 @@ const CreateCourse = () => {
                navigate("/instructor/courses");
           } catch (error) {
                alert("Failed to create course")
+               console.log(error)
           }
           finally{
                setLoading(false)

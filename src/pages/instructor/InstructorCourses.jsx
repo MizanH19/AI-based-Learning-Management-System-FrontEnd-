@@ -69,20 +69,7 @@ const InstructorCourses=()=>{
           <div className="max-w-7xl mx-auto px-6 py-12">
                {loading?(<p className="text-center text-gray-500"> Loading courses...</p>
                ):
-               // courses.length?(
-               //      <div className="bg-white p-10 rounded-2xl text-center border">
-               //           <h2 className="text-xl font-semibold text-gray-800">
-               //                No courses created yet
-               //           </h2>
-               //           <p className="text-gray-500 mt-2">
-               //                Start by creating your first course
-               //           </p>
-               //           <button className="mt-6 bg-indigo-600 text-white
-               //           px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
-               //                Create Course
-               //           </button>
-               //      </div>
-               // ):(
+        
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                          {courses.map((course)=>(
                               <div
@@ -108,13 +95,13 @@ const InstructorCourses=()=>{
                                    <div className="flex flex-wrap gap-3 mt-6">
                                    <button
                                         onClick={() =>
-                                        navigate(`/instructor/course/${course._id}`)
+                                        navigate(`/instructor/course/${course._id}/progress`)
                                         }
                                         className="bg-indigo-600 text-white
                                         px-4 py-2 rounded text-sm
                                         hover:bg-indigo-700 transition"
                                    >
-                                        Manage Course
+                                        View Progress
                                    </button>
 
                                    <button

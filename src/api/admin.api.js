@@ -48,3 +48,38 @@ export const getAllUsers = async () => {
   const res = await api.get("/admin/users");
   return res.data.data;
 };
+
+
+export const publishCourse = async (courseId) => {
+  const res = await api.patch(`/admin/courses/${courseId}/publish`);
+  return res.data.data;
+};
+
+export const unpublishCourse = async (courseId) => {
+  const res = await api.patch(`/admin/courses/${courseId}/unpublish`);
+  return res.data.data;
+};
+
+
+// Disable user
+export const disableUser = async (userId) => {
+  const res = await api.patch(`/admin/users/${userId}/disable`);
+  return res.data.data;
+};
+
+// Enable user
+export const enableUser = async (userId) => {
+  const res = await api.patch(`/admin/users/${userId}/enable`);
+  return res.data.data;
+};
+
+
+export const getAdminOverviewAnalytics = async () => {
+  const res = await api.get("/admin/analytics/overview");
+  return res.data.data;
+};
+
+export const getInstructorAnalytics = async () => {
+  const res = await api.get("/admin/analytics/instructors");
+  return res.data.data;
+};

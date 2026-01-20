@@ -15,17 +15,17 @@ function CourseDetails() {
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const [Restricted,setRestricted]=useState(false)
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        console.log(courseId);
+        // console.log(courseId);
         
         const res = await api.get(`/student/courses/${courseId}`);
         setCourse(res.data.data);
         console.log(res.data.data);
-        console.log(course);
-        
+        // console.log(course);
+        setRestricted(res.data.data.isRestricted)
         setIsEnrolled(res.data.data.isEnrolled);
       } catch (err) {
         console.error(err);
@@ -80,6 +80,10 @@ function CourseDetails() {
       alert("No lessons available");
       return;
     }
+    else if(Restricted){
+      alert("You are restricted by the Instructor")
+      return
+    }
     navigate(
       `/student/course/${course._id}/lesson/${course.lessons[0]._id}`
     );
@@ -122,8 +126,8 @@ function CourseDetails() {
                 key={lesson._id}
                 className="flex justify-between border p-4 rounded cursor-pointer"
                 onClick={() =>
-                  isEnrolled
-                    ? navigate(
+                  isEnrolled 
+                    ? Restricted ? alert("You are restricted by the Instructor!") : navigate(
                         `/student/course/${course._id}/lesson/${lesson._id}`
                       )
                     : alert("Please enroll first")
@@ -132,7 +136,7 @@ function CourseDetails() {
                 <p className="font-medium">
                   {index + 1}. {lesson.title}
                 </p>
-                <span>{isEnrolled ? "▶" : "🔒"}</span>
+                <span>{isEnrolled && !Restricted ? "▶" : "🔒"}</span>
               </div>
             ))}
           </div>

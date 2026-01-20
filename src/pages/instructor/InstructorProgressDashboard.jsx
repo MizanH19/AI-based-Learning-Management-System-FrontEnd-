@@ -1,38 +1,82 @@
+import { useEffect, useState } from "react";
 import Navbar from "../../components/common/Navbar";
 import { useParams } from "react-router-dom";
+import { getCourseProgress } from "../../api/instructor.api";
 
 const InstructorProgressDashboard = () => {
-  const { courseId } = useParams(); // future API use
+  const { courseId } = useParams(); 
+  const [data,setData]=useState();
+  const [students,setStudents]=useState([])
+  const [loading,setLoading]= useState(true)
+  const [error,setError] = useState("")
+
+
+  useEffect(()=>{
+    const loadProgress= async()=>{
+      try {
+        const res=await getCourseProgress(courseId);
+        setData(res)
+        setStudents(res.students)
+        console.log(res.students);
+        
+      } catch (error) {
+        console.error(error);
+        setError("Failed to load progress")
+      } finally{
+        setLoading(false)
+      }
+    }
+    loadProgress();
+    // console.log(data);
+    
+  },[courseId])
+
+  useEffect(() => {
+  if (data) {
+    console.log("Updated data:", data);
+  }
+}, [data]);
+
 
   // 🔹 MOCK DATA (aligned with API contract)
-  const data = {
-    summary: {
-      totalStudents: 12,
-      completed: 5,
-      inProgress: 6,
-      restricted: 1,
-    },
-    students: [
-      {
-        name: "Rahul Sharma",
-        progressPercentage: 100,
-        quizScores: [80, 90],
-        isCompleted: true,
-      },
-      {
-        name: "Ananya Singh",
-        progressPercentage: 65,
-        quizScores: [70],
-        isCompleted: false,
-      },
-      {
-        name: "Amit Verma",
-        progressPercentage: 30,
-        quizScores: [],
-        isCompleted: false,
-      },
-    ],
-  };
+  // const data = {
+  //   summary: {
+  //     totalStudents: 12,
+  //     completed: 5,
+  //     inProgress: 6,
+  //     restricted: 1,
+  //   },
+  //   students: [
+  //     {
+  //       name: "Rahul Sharma",
+  //       progressPercentage: 100,
+  //       quizScores: [80, 90],
+  //       isCompleted: true,
+  //     },
+  //     {
+  //       name: "Ananya Singh",
+  //       progressPercentage: 65,
+  //       quizScores: [70],
+  //       isCompleted: false,
+  //     },
+  //     {
+  //       name: "Amit Verma",
+  //       progressPercentage: 30,
+  //       quizScores: [],
+  //       isCompleted: false,
+  //     },
+  //   ],
+  // };
+
+
+  if (loading) {
+    return <div className="p-10 text-center">Loading progress...</div>;
+  }
+
+  if (error) {
+    return <div className="p-10 text-center text-red-500">{error}</div>;
+  }
+
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16">

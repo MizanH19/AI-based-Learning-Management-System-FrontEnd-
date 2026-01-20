@@ -24,14 +24,18 @@ const Navbar = () => {
   };
   const scrollToSection = (id) => {
   if (location.pathname === "/student") {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    // Already on homepage → scroll directly
+    document
+      .getElementById(id)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   } else {
-    navigate("/student", { replace: false, state: { scrollTo: id } });
+    // Not on homepage → navigate first
+    navigate("/student", {
+      state: { scrollTo: id },
+    });
   }
 };
+
 useEffect(() => {
   if (location.state && location.state.scrollTo) {
     const el = document.getElementById(location.state.scrollTo);
@@ -131,39 +135,33 @@ const [lastScrollY, setLastScrollY] = useState(0);
 
 
           <span
-              className="cursor-pointer hover:text-indigo-600"
-              onClick={() =>
-                document.getElementById("learn-next")?.scrollIntoView({ behavior: "smooth" })
-              }
-            >
-              What's next
-            </span>
+            className="cursor-pointer hover:text-indigo-600"
+            onClick={() => scrollToSection("learn-next")}
+          >
+            What's next
+          </span>
+
           <span
-              className="cursor-pointer hover:text-indigo-600"
-              onClick={() =>
-                document.getElementById("trending")?.scrollIntoView({ behavior: "smooth" })
-              }
-            >
-              Trending
-            </span>
+            className="cursor-pointer hover:text-indigo-600"
+            onClick={() => scrollToSection("trending")}
+          >
+            Trending
+          </span>
 
-            <span
-              className="cursor-pointer hover:text-indigo-600"
-              onClick={() =>
-                document.getElementById("new-releases")?.scrollIntoView({ behavior: "smooth" })
-              }
-            >
-              New
-            </span>
+          <span
+            className="cursor-pointer hover:text-indigo-600"
+            onClick={() => scrollToSection("new-releases")}
+          >
+            New
+          </span>
 
-            <span
-              className="cursor-pointer hover:text-indigo-600"
-              onClick={() =>
-                document.getElementById("top-picks")?.scrollIntoView({ behavior: "smooth" })
-              }
-            >
-              Top Picks
-            </span>
+          <span
+            className="cursor-pointer hover:text-indigo-600"
+            onClick={() => scrollToSection("top-picks")}
+          >
+            Top Picks
+          </span>
+
 
 
           {/* LINKS */}
@@ -246,6 +244,45 @@ const [lastScrollY, setLastScrollY] = useState(0);
           >
             Users
           </span>
+
+          <span
+            className="cursor-pointer text-red-500"
+            onClick={() => {
+              logout();
+              navigate("/login");
+            }}
+          >
+            Logout
+          </span>
+        </div>
+      )}
+
+      {auth?.role === "instructor" && (
+        
+        <div className="flex items-center gap-6 text-sm text-gray-700">
+          <span className="text-xl font-semibold">
+            INSTRUCTOR 
+          </span>
+          <span
+            className={`cursor-pointer ${isActive("/admin")}`}
+            onClick={() => navigate("/instructor")}
+          >
+            Dashboard
+          </span>
+
+          <span
+            className={`cursor-pointer ${isActive("/instructor/courses")}`}
+            onClick={() => navigate("/instructor/courses")}
+          >
+            Courses
+          </span>
+
+          {/* <span
+            className={`cursor-pointer ${isActive("/admin/users")}`}
+            onClick={() => navigate("/admin/users")}
+          >
+            Users
+          </span> */}
 
           <span
             className="cursor-pointer text-red-500"

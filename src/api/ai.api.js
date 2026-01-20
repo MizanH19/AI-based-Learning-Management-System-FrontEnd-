@@ -11,5 +11,7 @@ export const askAI = async (courseId,lessonId,question) => {
     lessonId,
     question,
   });
+  console.log(question);
+  
   return res.data.data;
 };

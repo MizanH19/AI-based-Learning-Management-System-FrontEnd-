@@ -20,6 +20,7 @@ import CreateCourse from '../pages/instructor/CreateCourse';
 import InstructorCourseManage from '../pages/instructor/InstructorCourseManage';
 import InstructorAddLesson from '../pages/instructor/InstructorAddLesson';
 import InstructorStudents from '../pages/instructor/InstructorStudents';
+import InstructorProgressDashboard from '../pages/instructor/InstructorProgressDashboard';
 const router=createBrowserRouter(
      [
           {
@@ -169,6 +170,14 @@ const router=createBrowserRouter(
                     element:(
                          <RoleProtectedRoute allowedRoles={['instructor']}>
                               <InstructorStudents/>
+                         </RoleProtectedRoute>
+                    )
+               },
+               {
+                    path:'/instructor/course/:courseId/progress',
+                    element:(
+                         <RoleProtectedRoute allowedRoles={['instructor']}>
+                              <InstructorProgressDashboard/>
                          </RoleProtectedRoute>
                     )
                },
