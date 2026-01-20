@@ -121,6 +121,14 @@ const isCompleted = progress?.completedLessons?.includes(lessonId);
             </video>
           </div>
         )}
+        {lesson.type === "pdf" && (
+          <div className="bg-black rounded overflow-hidden">
+            <iframe  className="w-full h-[420px]" src={lesson.contentUrl}>
+              
+          
+            </iframe>
+          </div>
+        )}
         <div className="bg-white border rounded p-4 space-y-3">
           <textarea
             placeholder="Ask AI about this lesson..."

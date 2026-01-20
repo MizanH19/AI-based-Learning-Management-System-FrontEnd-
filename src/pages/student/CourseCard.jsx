@@ -62,7 +62,7 @@ transition-all duration-300
                 : "bg-indigo-600 text-white hover:bg-indigo-700"
             }`}
         >
-          {actionLabel}
+          {actionLabel?actionLabel:"See Details"}
         </button>
       </div>
     </div>

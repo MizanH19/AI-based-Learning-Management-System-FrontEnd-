@@ -14,6 +14,7 @@ function StudentHome() {
   const [activeSlide, setActiveSlide] = React.useState(0);
   const location = useLocation();
   const [courses,setCourses]=useState([])
+  const [Mycourses,setMyCourses]=useState([])
   const [error,setError]=useState("")
 
   useEffect(()=>{
@@ -27,16 +28,31 @@ function StudentHome() {
       }
     }
     fetchCourses()
-  })
+  },[])
 
-  useEffect(() => {
-  if (location.state?.scrollTo) {
-    const section = document.getElementById(location.state.scrollTo);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
+  useEffect(()=>{
+    const fetchCourses=async () => {
+      try {
+        const res=await api.get("/student/my-courses")
+        setMyCourses(res.data.data)
+        console.log(res.data.data);
+        
+      } catch (error) {
+        console.error("Failed to fetch courses:", error);
+        setError("Failed to load courses");
+      }
     }
-  }
-}, [location]);
+    fetchCourses()
+  },[])
+
+//   useEffect(() => {
+//   if (location.state?.scrollTo) {
+//     const section = document.getElementById(location.state.scrollTo);
+//     if (section) {
+//       section.scrollIntoView({ behavior: "smooth" });
+//     }
+//   }
+// }, [location]);
 
 
 
@@ -51,6 +67,24 @@ function StudentHome() {
     prev === 0 ? heroSlides.length - 1 : prev - 1
   );
 };
+
+useEffect(() => {
+  if (!location.state?.scrollTo) return;
+  if (courses.length === 0) return; // 👈 WAIT FOR DATA
+
+  const sectionId = location.state.scrollTo;
+
+  requestAnimationFrame(() => {
+    document
+      .getElementById(sectionId)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  // clear state so refresh doesn't re-scroll
+  window.history.replaceState({}, document.title);
+
+}, [location.state, courses.length]);
+
 
 
 
@@ -212,7 +246,9 @@ const thumbnail=["https://cdn.pixabay.com/photo/2021/08/04/13/06/software-develo
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {currentlyWatching.map((course) => (
+            {Mycourses.filter(course=>course.progressPercentage>0).map((course) => (
+
+              
               <div
                 key={course.id}
                 className="bg-white p-5 rounded border"
@@ -224,12 +260,12 @@ const thumbnail=["https://cdn.pixabay.com/photo/2021/08/04/13/06/software-develo
                 <div className="h-2 bg-gray-200 rounded mb-2">
                   <div
                     className="h-2 bg-indigo-600 rounded"
-                    style={{ width: `${course.progress}%` }}
+                    style={{ width: `${course.progressPercentage}%` }}
                   />
                 </div>
 
                 <p className="text-sm text-gray-500 mb-4">
-                  {course.progress}% completed
+                  {course.progressPercentage}% completed
                 </p>
 
                 <button
@@ -272,7 +308,9 @@ const thumbnail=["https://cdn.pixabay.com/photo/2021/08/04/13/06/software-develo
                     title: course.title,
                     description: course.description,
                     thumbnail: thumbnail[index%thumbnail.length],
-                  }} />
+                    
+                  }} 
+                  actionLabel="Explore " />
             ))}
           </div>
         </section>
@@ -301,7 +339,8 @@ const thumbnail=["https://cdn.pixabay.com/photo/2021/08/04/13/06/software-develo
                     title: course.title,
                     description: course.description,
                     thumbnail: thumbnail[index%thumbnail.length],
-                  }} />
+                  }}
+                  actionLabel="Explore" />
               ))}
           </div>
         </section>
@@ -330,7 +369,8 @@ const thumbnail=["https://cdn.pixabay.com/photo/2021/08/04/13/06/software-develo
                     title: course.title,
                     description: course.description,
                     thumbnail: thumbnail[index%thumbnail.length],
-                  }} />
+                  }}
+                  actionLabel="Fresh Arrivals" />
               ))}
           </div>
         </section>
@@ -360,7 +400,8 @@ const thumbnail=["https://cdn.pixabay.com/photo/2021/08/04/13/06/software-develo
                     title: course.title,
                     description: course.description,
                     thumbnail: thumbnail[index%thumbnail.length],
-                  }} />
+                  }}
+                  actionLabel="Recommended" />
               ))}
           </div>
         </section>
